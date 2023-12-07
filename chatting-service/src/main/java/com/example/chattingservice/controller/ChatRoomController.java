@@ -20,12 +20,12 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final KafkaTemplate<String, ChatDto> kafkaTemplate;
 
-    @PostMapping("/kafka/publish")
+    @PostMapping("/send")
     public void publishMessageToTopic(@RequestBody ChatDto chatDto) throws ExecutionException, InterruptedException {
         if(chatDto.getType()==ChatDto.MessageType.TALK) chatRoomService.updateRecentMessageData(chatDto);
         else if(chatDto.getType()==ChatDto.MessageType.ENTER) chatDto.updateEnterMessage();
 
-        kafkaTemplate.send(KafkaConfig.TOPIC_NAME,chatDto).get();
+        kafkaTemplate.send(KafkaConfig.TOPIC_NAME,chatDto).get(); // Exception 처리하기 (try-catch)
     }
 
     // 채팅리스트 화면 조회

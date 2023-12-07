@@ -55,14 +55,14 @@ function Chat(){
     }
 
     function setSessionOptions(sendMsgForm){
-        stompClient.current.send("/pub/chat/enterUser",{},JSON.stringify(sendMsgForm))
+        stompClient.current.send("/pub/chat/sessions",{},JSON.stringify(sendMsgForm))
     }
 
     const sendEnterMessage = async(sendMsgForm) => {
 
         const response = await axios({
             method: "post",
-            url: '/chatting-service/kafka/publish',
+            url: '/chatting-service/send',
             data: sendMsgForm,
             headers: { "Content-Type" : "application/json"}
         });
@@ -85,7 +85,7 @@ function Chat(){
 
         const response = await axios({
             method: "post",
-            url: '/chatting-service/kafka/publish',
+            url: '/chatting-service/send',
             data: sendMsgForm,
             headers: { "Content-Type" : "application/json"}
         });

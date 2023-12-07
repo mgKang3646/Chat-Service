@@ -32,7 +32,7 @@ public class ChatController {
         template.convertAndSend("/sub/chat/room/" + chatDto.getRoomUuid(), chatDto);
     }
 
-    @MessageMapping("/chat/enterUser")
+    @MessageMapping("/chat/sessions")
     public void setSessionOptions(@Payload ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor){
         headerAccessor.getSessionAttributes().put("userUUID", chatDto.getSenderUuid());
         headerAccessor.getSessionAttributes().put("roomUUID", chatDto.getRoomUuid());
