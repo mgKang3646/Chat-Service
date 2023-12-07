@@ -1,0 +1,36 @@
+.example{
+    display: flex; /* Flexbox 사용 */
+    flex-direction: column;
+    justify-content: center; /* 가로축 중앙 정렬 */
+    align-items: center; /* 세로축 중앙 정렬 */
+    height: 50vh; /* 뷰포트 높이 전체를 차지 */
+}
+
+form.example input{
+    margin: 5px;
+    width: 30%;
+    font-size: 17px;
+    border: 1px solid grey;
+    background:#f1f1f1;
+}
+
+form.example button {
+    width: 15%;
+    margin: 5px;
+    background: #333;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+}
+
+form.example button:hover{
+    background: #0b7dda;
+}
+
+form.example::after{
+    content:"";
+    clear: both;
+    display: table;
+}

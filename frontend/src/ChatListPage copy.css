@@ -1,0 +1,55 @@
+/* 전체 페이지에 대한 스타일링 */
+.ChatListPage {
+    font-family: 'Arial', sans-serif;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    margin: 0;
+    background-color: #f7f7f7;
+}
+
+/* 테이블 스타일링 */
+table {
+    border-collapse: collapse;
+    width: 100%; /* 테이블 너비 */
+    margin-top: 20px; /* 상단 여백 */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* 그림자 효과 */
+}
+
+/* 테이블 헤더 스타일링 */
+th {
+    background-color: #333; /* 헤더 배경색 */
+    color: white; /* 헤더 글자색 */
+    padding: 10px; /* 안쪽 여백 */
+}
+
+/* 테이블 셀 스타일링 */
+td {
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 8px; /* 안쪽 여백 */
+    border-bottom: 1px solid #ddd; /* 하단 테두리 */
+}
+
+/* 테이블 행 호버 효과 */
+tr:hover {background-color: #f5f5f5;}
+
+/* 버튼 스타일링 */
+button {
+    background-color: #333; /* 배경색 */
+    color: white; /* 글자색 */
+    border: none; /* 테두리 없음 */
+    padding: 5px 10px; /* 안쪽 여백 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    text-decoration: none; /* 텍스트 장식 없음 */
+    display: inline-block; /* 인라인-블록 디스플레이 */
+    font-size: 16px; /* 글자 크기 */
+    margin: 4px 2px; /* 바깥쪽 여백 */
+    cursor: pointer; /* 커서 포인터 */
+}
+
+/* 버튼 호버 효과 */
+button:hover {
+    background-color: #a9aaa9;
+}
