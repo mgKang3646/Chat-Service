@@ -1,4 +1,4 @@
-package com.example.chattingservice.domain;
+package com.example.chattingservice.vo;
 
 public enum RoomUserState {
     IN,LEAVE,EXITED;

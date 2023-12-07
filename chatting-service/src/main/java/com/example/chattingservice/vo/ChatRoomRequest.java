@@ -1,4 +1,4 @@
-package com.example.chattingservice.domain;
+package com.example.chattingservice.vo;
 
 
 import lombok.Getter;

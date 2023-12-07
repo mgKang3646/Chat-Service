@@ -1,8 +1,8 @@
 package com.example.chattingservice.repository;
 
-import com.example.chattingservice.domain.ChatDto;
-import com.example.chattingservice.domain.RoomUserDto;
-import com.example.chattingservice.domain.RoomUserState;
+import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.entity.ChatRoom;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;

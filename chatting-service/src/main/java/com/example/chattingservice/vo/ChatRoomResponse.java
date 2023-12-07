@@ -1,6 +1,8 @@
-package com.example.chattingservice.domain;
+package com.example.chattingservice.vo;
 
 
+import com.example.chattingservice.dto.ChatRoomDto;
+import com.example.chattingservice.dto.RoomUserDto;
 import lombok.*;
 
 @Getter

@@ -1,6 +1,6 @@
 package com.example.chattingservice.controller;
-import com.example.chattingservice.domain.ChatRoomRequest;
-import com.example.chattingservice.domain.ChatRoomResponse;
+import com.example.chattingservice.vo.ChatRoomRequest;
+import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

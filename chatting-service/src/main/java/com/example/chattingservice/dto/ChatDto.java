@@ -1,7 +1,9 @@
-package com.example.chattingservice.domain;
+package com.example.chattingservice.dto;
 
 
 import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -9,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ChatDto {
+public class ChatDto implements Serializable {
 
     public enum MessageType {
         ENTER, TALK, LEAVE, EXITED;

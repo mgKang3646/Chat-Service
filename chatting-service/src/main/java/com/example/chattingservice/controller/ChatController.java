@@ -1,7 +1,7 @@
 package com.example.chattingservice.controller;
 
-import com.example.chattingservice.domain.ChatDto;
-import com.example.chattingservice.domain.RoomUserState;
+import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

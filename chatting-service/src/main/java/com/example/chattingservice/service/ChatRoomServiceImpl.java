@@ -1,12 +1,17 @@
 package com.example.chattingservice.service;
 
 
-import com.example.chattingservice.domain.*;
+import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.dto.ChatRoomDto;
+import com.example.chattingservice.dto.RoomUserDto;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
 import com.example.chattingservice.repository.ChatRoomRepository;
 import com.example.chattingservice.repository.RoomUserRepository;
 import com.example.chattingservice.util.ModelMapperUtil;
+import com.example.chattingservice.vo.ChatRoomRequest;
+import com.example.chattingservice.vo.ChatRoomResponse;
+import com.example.chattingservice.vo.RoomUserState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.example.chattingservice;
 
 
-import com.example.chattingservice.domain.ChatDto;
-import com.example.chattingservice.domain.RoomUserState;
+import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
 import com.example.chattingservice.repository.ChatRoomRepository;

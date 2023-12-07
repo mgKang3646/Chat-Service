@@ -1,8 +1,7 @@
 package com.example.chattingservice.entity;
 
-import com.example.chattingservice.domain.RoomUserState;
+import com.example.chattingservice.vo.RoomUserState;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 

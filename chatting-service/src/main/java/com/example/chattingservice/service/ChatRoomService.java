@@ -1,6 +1,10 @@
 package com.example.chattingservice.service;
 
-import com.example.chattingservice.domain.*;
+import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.dto.ChatRoomDto;
+import com.example.chattingservice.vo.ChatRoomRequest;
+import com.example.chattingservice.vo.ChatRoomResponse;
+import com.example.chattingservice.vo.RoomUserState;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 
 import java.util.List;

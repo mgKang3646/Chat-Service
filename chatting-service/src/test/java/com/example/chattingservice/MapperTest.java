@@ -1,18 +1,7 @@
 package com.example.chattingservice;
 
 
-import com.example.chattingservice.domain.ChatRoomDto;
-import com.example.chattingservice.domain.RoomUserDto;
-import com.example.chattingservice.entity.ChatRoom;
-import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 
 @SpringBootTest

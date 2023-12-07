@@ -1,4 +1,4 @@
-package com.example.chattingservice.domain;
+package com.example.chattingservice.dto;
 
 
 import lombok.*;

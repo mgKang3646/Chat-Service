@@ -1,10 +1,10 @@
 package com.example.chattingservice.util;
 
 
-import com.example.chattingservice.domain.ChatRoomDto;
-import com.example.chattingservice.domain.ChatRoomRequest;
-import com.example.chattingservice.domain.ChatRoomResponse;
-import com.example.chattingservice.domain.RoomUserDto;
+import com.example.chattingservice.dto.ChatRoomDto;
+import com.example.chattingservice.vo.ChatRoomRequest;
+import com.example.chattingservice.vo.ChatRoomResponse;
+import com.example.chattingservice.dto.RoomUserDto;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
 import lombok.Getter;
