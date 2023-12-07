@@ -1,5 +1,6 @@
 package com.example.chattingservice.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -9,6 +10,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class MessageBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
 
@@ -27,5 +29,9 @@ public class MessageBrokerConfig implements WebSocketMessageBrokerConfigurer {
         // 메시지 발행 요청 URL
         registry.setApplicationDestinationPrefixes("/pub");
     }
+
+
+
+
 
 }

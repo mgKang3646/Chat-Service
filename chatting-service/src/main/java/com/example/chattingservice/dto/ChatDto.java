@@ -25,14 +25,8 @@ public class ChatDto implements Serializable {
     private String message;
     private String messageTime;
 
-    public static ChatDto getInstanceEnter(ChatDto chatDtoRequest){
-        return ChatDto.builder()
-                .roomUuid(chatDtoRequest.getRoomUuid())
-                .senderNickname(chatDtoRequest.getSenderNickname())
-                .senderUuid(chatDtoRequest.getSenderUuid())
-                .message(chatDtoRequest.getSenderNickname() + "님이 입장하였습니다.")
-                .type(MessageType.ENTER)
-                .build();
+    public void updateEnterMessage(){
+        setMessage(getSenderNickname() + "님이 입장하였습니다.");
     }
 
     public static ChatDto getInstanceExit(String roomUUID, String userUUID, String username){
@@ -44,5 +38,7 @@ public class ChatDto implements Serializable {
                 .type(MessageType.EXITED)
                 .build();
     }
+
+
 
 }

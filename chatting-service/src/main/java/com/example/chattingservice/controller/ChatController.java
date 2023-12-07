@@ -29,28 +29,18 @@ public class ChatController {
             groupId = KafkaConfig.GROUP_ID
     )
     public void listen(ChatDto chatDto){
-        log.info("===================== ChatController KAFKA LISTEN ChatDto {}", chatDto.toString());
         template.convertAndSend("/sub/chat/room/" + chatDto.getRoomUuid(), chatDto);
-
     }
 
     @MessageMapping("/chat/enterUser")
-    public void enterChatRoom(@Payload ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor){
+    public void setSessionOptions(@Payload ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor){
 
-        log.info( " ===================== ENTER ChatDto : {} ", chatDto.toString());
         // STOMP 세션에 userId와 roomId 저장하기 ( 세션 종료 이벤트 발생시, Room 객체에서 User 제거 )
         headerAccessor.getSessionAttributes().put("userUUID", chatDto.getSenderUuid());
         headerAccessor.getSessionAttributes().put("roomUUID", chatDto.getRoomUuid());
 
         chatRoomService.updateEnterUserState(RoomUserState.IN,chatDto);
-        template.convertAndSend("/sub/chat/room/" + chatDto.getRoomUuid(), ChatDto.getInstanceEnter(chatDto));
 
-    }
-
-    @MessageMapping("/chat/sendMessage")
-    public void sendMessage(@Payload ChatDto chatDto) {
-        chatRoomService.updateRecentMessageData(chatDto); // 채팅방 정보 update
-        template.convertAndSend("/sub/chat/room/" + chatDto.getRoomUuid(), chatDto);
     }
 
     @MessageMapping("/chat/leave")
@@ -65,9 +55,5 @@ public class ChatController {
         ChatDto chatDtoExit = chatRoomService.doExitUserProcess(stompHeaderAccessor);
         template.convertAndSend("/sub/chat/room/" + chatDtoExit.getRoomUuid(), chatDtoExit);
     }
-
-    // 유저 조회
-
-    // 유저 닉네임 중복 조회
 
 }

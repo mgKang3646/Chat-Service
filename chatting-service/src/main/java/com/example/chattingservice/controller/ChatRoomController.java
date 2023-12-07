@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @RequiredArgsConstructor
 //@CrossOrigin
-
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
@@ -23,7 +22,9 @@ public class ChatRoomController {
 
     @PostMapping("/kafka/publish")
     public void testSendMessage(@RequestBody ChatDto chatDto) throws ExecutionException, InterruptedException {
-        log.info("================= ChatRoomController Publish Message ChatDTO {}",chatDto.toString());
+        if(chatDto.getType()==ChatDto.MessageType.TALK) chatRoomService.updateRecentMessageData(chatDto);
+        else if(chatDto.getType()==ChatDto.MessageType.ENTER) chatDto.updateEnterMessage();
+
         kafkaTemplate.send(KafkaConfig.TOPIC_NAME,chatDto).get();
     }
 
@@ -51,15 +52,5 @@ public class ChatRoomController {
         }
     }
 
-    // 채팅방 입장 화면
-    // 파라미터로 넘어오는 roomId 를 확인후 해당 roomId 를 기준으로
-    // 채팅방을 찾아서 클라이언트를 chatroom 으로 보낸다.
-/*    @GetMapping("/chat/room")
-    public String roomDetail(String roomId){
-
-        log.info("roomId {}", roomId);
-        model.addAttribute("room", chatRepository.findRoomById(roomId));
-        return "chatroom";
-    }*/
 
 }

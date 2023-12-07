@@ -9,7 +9,6 @@ import axios from 'axios';
 function Chat(){
 
     const location = useLocation();
-    const [isSubscribed, setIsSubscribed ] = useState(false);
     const stompUrl = 'http://192.168.219.101:8000/chatting-service/ws-stomp';
     const roomId = location.state?.roomId;
     const ownerName = location.state?.ownerName;
@@ -38,25 +37,39 @@ function Chat(){
         setInput(event.target.value);
     }
 
-
+    // 요청을 3번 보낸다 ( 1. 구독, 2. 세션셜정 3.입장 메시지 ) => 요청 횟수를 줄일 수 있는 방법은 없을까?
     function onConnected() {
-        // /sub/chat/room/roomId 로 구독한다
-        if(!isSubscribed) {
-            stompClient.current.subscribe('/sub/chat/room/' + roomId, onMessageReceived,{'id':roomId});
-            setIsSubscribed(true);
         
-            stompClient.current.send("/pub/chat/enterUser",
-                    {},
-                    JSON.stringify({
-                        roomUuid: roomId,
-                        senderNickname: localStorage.getItem('username'),
-                        senderUuid: localStorage.getItem('userId'),
-                        type: 'ENTER'
-                    })
-                )
-        }
+        stompClient.current.subscribe('/sub/chat/room/' + roomId, onMessageReceived,{'id':roomId}); // 구독 요청하기
+
+        let sendMsgForm = {
+            roomUuid: roomId,
+            senderNickname: localStorage.getItem('username'),
+            senderUuid: localStorage.getItem('userId'),
+            type: 'ENTER'
+        };
+
+        setSessionOptions(sendMsgForm); // 세션설정정보 전송하기 
+        sendEnterMessage(sendMsgForm); // 입장 메시지 전송하기
+        
     }
-    const kafkaTest = async(event)=>{
+
+    function setSessionOptions(sendMsgForm){
+        stompClient.current.send("/pub/chat/enterUser",{},JSON.stringify(sendMsgForm))
+    }
+
+    const sendEnterMessage = async(sendMsgForm) => {
+
+        const response = await axios({
+            method: "post",
+            url: '/chatting-service/kafka/publish',
+            data: sendMsgForm,
+            headers: { "Content-Type" : "application/json"}
+        });
+    }
+
+    // 채팅방에 메시지 전송하기 
+    const sendMessage = async(event)=>{
         
         const chatMsg = input.trim();
         const currentTime = getCurrentTime();
@@ -77,37 +90,35 @@ function Chat(){
             headers: { "Content-Type" : "application/json"}
         });
 
-        if(response.status === 200){
-            console.log("KAFKA TEST 성공")
-        }
-
         event.preventDefault();
     }
-    // 채팅방에 메시지 전송하기 
-    function sendMessage(event) {
+
+    //  // Kafka 적용 전 sendMessage
+    // function sendMessageBeforeKafka(event) {
     
 
-        const chatMsg = input.trim();
-        const currentTime = getCurrentTime();
+    //     const chatMsg = input.trim();
+    //     const currentTime = getCurrentTime();
 
-        console.log("채팅 전송 시작 : " + chatMsg);
-        console.log("채팅 클라이언트 : " + stompClient.current);
-        if (chatMsg && stompClient.current) {
+    //     console.log("채팅 전송 시작 : " + chatMsg);
+    //     console.log("채팅 클라이언트 : " + stompClient.current);
+    //     if (chatMsg && stompClient.current) {
 
-            let sendMsgForm = {
-                roomUuid: roomId,
-                senderNickname: localStorage.getItem('username'),
-                senderUuid: localStorage.getItem('userId'),
-                message: chatMsg,
-                messageTime: currentTime,
-                type: 'TALK'
-            };
+    //         let sendMsgForm = {
+    //             roomUuid: roomId,
+    //             senderNickname: localStorage.getItem('username'),
+    //             senderUuid: localStorage.getItem('userId'),
+    //             message: chatMsg,
+    //             messageTime: currentTime,
+    //             type: 'TALK'
+    //         };
 
-            stompClient.current.send("/pub/chat/sendMessage", {}, JSON.stringify(sendMsgForm));
-        }
-        event.preventDefault();
-    }
+    //         stompClient.current.send("/pub/chat/sendMessage", {}, JSON.stringify(sendMsgForm));
+    //     }
+    //     event.preventDefault();
+    // }
 
+    
     // 채팅방 벗어나기 ( 채팅방 화면에서 나가기 )
     function leaveChatRoom(event) {
         if(stompClient.current){
@@ -124,8 +135,6 @@ function Chat(){
         }
         event.preventDefault();
         navigate("/chatlist");
-
-
     }
 
     // 채팅방 퇴장하기 
@@ -197,9 +206,6 @@ function Chat(){
                         placeholder='채팅을 입력해주세요'
                     />
                     <button onClick={sendMessage}> 전송 </button>
-
-                    <button onClick={kafkaTest}> KAFKA TEST BUTTON </button>
-
                 </div>
             </div>
         </div>
