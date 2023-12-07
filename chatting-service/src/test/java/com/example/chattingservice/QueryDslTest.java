@@ -53,7 +53,7 @@ public class QueryDslTest {
         userId1 = UUID.randomUUID().toString();
         userId2 = UUID.randomUUID().toString();
 
-        ChatRoom chatRoomEntity = new ChatRoom(roomUuid);
+        ChatRoom chatRoomEntity = ChatRoom.getInstance(roomUuid);
         chatRoomEntity.setMessageCount(10);
 
         RoomUser roomUser1 = RoomUser.builder()
@@ -160,7 +160,7 @@ public class QueryDslTest {
                 )
                 .fetchOne();
 
-        ChatRoom chatRoom1 = Optional.ofNullable(findChatRoom).orElse(new ChatRoom("20"));
+        ChatRoom chatRoom1 = Optional.ofNullable(findChatRoom).orElse(ChatRoom.getInstance("20"));
 
 
         System.out.println("방 번호 : " + chatRoom1.getRoomId());

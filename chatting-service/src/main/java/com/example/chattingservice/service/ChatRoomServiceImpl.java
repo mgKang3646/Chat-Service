@@ -2,7 +2,6 @@ package com.example.chattingservice.service;
 
 
 import com.example.chattingservice.dto.ChatDto;
-import com.example.chattingservice.dto.ChatRoomDto;
 import com.example.chattingservice.dto.RoomUserDto;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
@@ -57,9 +56,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public String findChatRoomByUserId(ChatRoomRequest chatRoomRequest) {
-        List<RoomUserDto> roomUserDtoList = modelMapperUtil.convertToRoomUserDto(chatRoomRequest);
-        return chatRoomRepository.findChatRoomByUserId(roomUserDtoList).getRoomUuid();
+    public ChatRoomResponse findOrCreateChatRoom(ChatRoomRequest chatRoomRequest) {
+        String roomUuid = findChatRoomUuID(chatRoomRequest);
+        return (roomUuid.equals("0")) ? createChatRoom(chatRoomRequest) : ChatRoomResponse.getInstance(roomUuid);
     }
 
     @Override
@@ -90,15 +89,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomRepository.findUsernameByRoomIdAndUserId(roomUUID,userUUID);
     }
 
+    private String findChatRoomUuID(ChatRoomRequest chatRoomRequest) {
+        List<RoomUserDto> roomUserDtoList = modelMapperUtil.convertToRoomUserDto(chatRoomRequest);
+        return chatRoomRepository.findChatRoomByUserId(roomUserDtoList).getRoomUuid();
+    }
 
-    @Override
-    public String deleteUserInRoom(String roomId, String userId) {
-        return null;
-    }
-    @Override
-    public void findAllRoomByUserId() {}
-    @Override
-    public ChatRoomDto getChatRoom(String roomId) {
-        return null;
-    }
+
 }

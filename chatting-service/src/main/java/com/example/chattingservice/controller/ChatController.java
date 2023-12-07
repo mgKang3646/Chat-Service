@@ -34,8 +34,6 @@ public class ChatController {
 
     @MessageMapping("/chat/enterUser")
     public void setSessionOptions(@Payload ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor){
-
-        // STOMP 세션에 userId와 roomId 저장하기 ( 세션 종료 이벤트 발생시, Room 객체에서 User 제거 )
         headerAccessor.getSessionAttributes().put("userUUID", chatDto.getSenderUuid());
         headerAccessor.getSessionAttributes().put("roomUUID", chatDto.getRoomUuid());
 

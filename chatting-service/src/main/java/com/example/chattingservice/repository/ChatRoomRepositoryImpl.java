@@ -134,7 +134,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
                 )
                 .fetchOne();
 
-        return Optional.ofNullable(findChatRoom).orElse(new ChatRoom("0"));
+        return Optional.ofNullable(findChatRoom).orElse(ChatRoom.getInstance("0"));
 
     }
 

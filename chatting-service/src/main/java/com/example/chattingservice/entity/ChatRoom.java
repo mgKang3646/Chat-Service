@@ -7,6 +7,8 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor( access = AccessLevel.PROTECTED )
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class ChatRoom {
@@ -31,9 +33,10 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom")
     private List<RoomUser> roomUsers = new ArrayList<>();
 
-
-    public ChatRoom(String roomUuid) {
-        this.roomUuid = roomUuid;
+    public static ChatRoom getInstance(String roomUuid){
+        return ChatRoom.builder()
+                .roomUuid(roomUuid)
+                .build();
     }
 
 }

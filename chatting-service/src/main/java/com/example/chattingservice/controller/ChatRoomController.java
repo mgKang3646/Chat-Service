@@ -21,7 +21,7 @@ public class ChatRoomController {
     private final KafkaTemplate<String, ChatDto> kafkaTemplate;
 
     @PostMapping("/kafka/publish")
-    public void testSendMessage(@RequestBody ChatDto chatDto) throws ExecutionException, InterruptedException {
+    public void publishMessageToTopic(@RequestBody ChatDto chatDto) throws ExecutionException, InterruptedException {
         if(chatDto.getType()==ChatDto.MessageType.TALK) chatRoomService.updateRecentMessageData(chatDto);
         else if(chatDto.getType()==ChatDto.MessageType.ENTER) chatDto.updateEnterMessage();
 
@@ -37,19 +37,7 @@ public class ChatRoomController {
     // 채팅방 생성
     @PostMapping("/createroom")
     public ChatRoomResponse createRoom(@RequestBody ChatRoomRequest chatRoomRequest) {
-        log.info("Get ChatRoomRequest {}", chatRoomRequest);
-
-        // 기존 대화방이 존재하는지 조회하기
-        String findRoomId = chatRoomService.findChatRoomByUserId(chatRoomRequest);
-
-        // 기존 대화방이 존재하지 않으면 새로운 방 생성
-        if(findRoomId.equals("0")) {
-            return chatRoomService.createChatRoom(chatRoomRequest);
-        }
-        // 기존 대화방이 존재하면 기존 방 반환
-        else{
-            return new ChatRoomResponse(findRoomId);
-        }
+        return chatRoomService.findOrCreateChatRoom(chatRoomRequest);
     }
 
 

@@ -19,9 +19,10 @@ public class ChatRoomResponse {
     private String recentDate;
     private int messageNotRead;
 
-
-    public ChatRoomResponse(String roomUuid) {
-        this.roomUuid = roomUuid;
+    public static ChatRoomResponse getInstance(String roomUuid){
+        return ChatRoomResponse.builder()
+                .roomUuid(roomUuid)
+                .build();
     }
 
     public static ChatRoomResponse convert(ChatRoomDto chatRoomDto, String sender){

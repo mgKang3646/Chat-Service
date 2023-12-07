@@ -1,7 +1,6 @@
 package com.example.chattingservice.service;
 
 import com.example.chattingservice.dto.ChatDto;
-import com.example.chattingservice.dto.ChatRoomDto;
 import com.example.chattingservice.vo.ChatRoomRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.vo.RoomUserState;
@@ -12,15 +11,12 @@ import java.util.List;
 public interface ChatRoomService {
 
     public ChatRoomResponse createChatRoom(ChatRoomRequest chatRoomRequest);
-    public String deleteUserInRoom(String roomId, String userId);
-    public void findAllRoomByUserId();
     public void updateRecentMessageData(ChatDto chatDto);
-    public ChatRoomDto getChatRoom(String roomId);
     public void updateRoomUserState(RoomUserState roomUserState, ChatDto chatDto);
 
     public void updateReadMessageCount(ChatDto chatDto);
 
-    public String findChatRoomByUserId(ChatRoomRequest chatRoomRequest);
+    public ChatRoomResponse findOrCreateChatRoom(ChatRoomRequest chatRoomRequest);
 
     public List<ChatRoomResponse> findAllChatRoomByUserId(String userId);
 
