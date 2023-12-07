@@ -30,7 +30,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatRoom chatRoom = modelMapperUtil.convertToChatRoom(chatRoomRequest);
         List<RoomUser> roomUserList = modelMapperUtil.convertToRoomUser(chatRoomRequest);
 
-        // 영속화
+        // 영속화 => QueryDSL Insert문으로 변경하여 코드 줄이기
         chatRoomRepository.save(chatRoom);
         roomUserList.forEach(roomUser -> {
             roomUser.updateChatRoom(chatRoom);

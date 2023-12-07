@@ -8,7 +8,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor( access = AccessLevel.PROTECTED )
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
 public class ChatRoom {
@@ -34,9 +33,9 @@ public class ChatRoom {
     private List<RoomUser> roomUsers = new ArrayList<>();
 
     public static ChatRoom getInstance(String roomUuid){
-        return ChatRoom.builder()
-                .roomUuid(roomUuid)
-                .build();
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setRoomUuid(roomUuid);
+        return chatRoom;
     }
 
 }
