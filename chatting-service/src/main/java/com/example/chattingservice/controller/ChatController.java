@@ -1,11 +1,13 @@
 package com.example.chattingservice.controller;
 
+import com.example.chattingservice.config.KafkaConfig;
 import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -21,6 +23,16 @@ public class ChatController {
 
     private final SimpMessageSendingOperations template;
     private final ChatRoomService chatRoomService;
+
+    @KafkaListener(
+            topics = KafkaConfig.TOPIC_NAME,
+            groupId = KafkaConfig.GROUP_ID
+    )
+    public void listen(ChatDto chatDto){
+        log.info("===================== ChatController KAFKA LISTEN ChatDto {}", chatDto.toString());
+        template.convertAndSend("/sub/chat/room/" + chatDto.getRoomUuid(), chatDto);
+
+    }
 
     @MessageMapping("/chat/enterUser")
     public void enterChatRoom(@Payload ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor){

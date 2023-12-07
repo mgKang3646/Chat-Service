@@ -4,6 +4,7 @@ import './ChatPage.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import axios from 'axios';
 
 function Chat(){
 
@@ -55,7 +56,33 @@ function Chat(){
                 )
         }
     }
+    const kafkaTest = async(event)=>{
+        
+        const chatMsg = input.trim();
+        const currentTime = getCurrentTime();
 
+        let sendMsgForm = {
+            roomUuid: roomId,
+            senderNickname: localStorage.getItem('username'),
+            senderUuid: localStorage.getItem('userId'),
+            message: chatMsg,
+            messageTime: currentTime,
+            type: 'TALK'
+        };
+
+        const response = await axios({
+            method: "post",
+            url: '/chatting-service/kafka/publish',
+            data: sendMsgForm,
+            headers: { "Content-Type" : "application/json"}
+        });
+
+        if(response.status === 200){
+            console.log("KAFKA TEST 성공")
+        }
+
+        event.preventDefault();
+    }
     // 채팅방에 메시지 전송하기 
     function sendMessage(event) {
     
@@ -145,6 +172,8 @@ function Chat(){
         return formattedDateTime;
     }
 
+
+
     return (
         <div className="chat">
             <div className="chat-window">
@@ -169,6 +198,7 @@ function Chat(){
                     />
                     <button onClick={sendMessage}> 전송 </button>
 
+                    <button onClick={kafkaTest}> KAFKA TEST BUTTON </button>
 
                 </div>
             </div>

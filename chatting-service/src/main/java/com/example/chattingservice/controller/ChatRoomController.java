@@ -1,18 +1,31 @@
 package com.example.chattingservice.controller;
+import com.example.chattingservice.config.KafkaConfig;
+import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.vo.ChatRoomRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+//@CrossOrigin
+
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+    private final KafkaTemplate<String, ChatDto> kafkaTemplate;
+
+    @PostMapping("/kafka/publish")
+    public void testSendMessage(@RequestBody ChatDto chatDto) throws ExecutionException, InterruptedException {
+        log.info("================= ChatRoomController Publish Message ChatDTO {}",chatDto.toString());
+        kafkaTemplate.send(KafkaConfig.TOPIC_NAME,chatDto).get();
+    }
 
     // 채팅리스트 화면 조회
     @GetMapping("/{userId}/rooms")
