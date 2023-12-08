@@ -5,7 +5,7 @@ services:
    dockerfile: Dockerfile
    context: ./frontend
   ports:
-   - "3300:3000"
+   - "3000:3000"
   volumes: #/frontend 디렉토리를 공유하되 종속성모듈은 공유X
    - /app/node_modules # 종속성은 공유x
    - ./frontend:/app # 나머지 소스는 공유

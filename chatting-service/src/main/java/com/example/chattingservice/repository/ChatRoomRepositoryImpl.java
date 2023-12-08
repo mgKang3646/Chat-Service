@@ -23,7 +23,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
     }
 
     @Override
-    public ChatRoom findByRoomId(String roomUuid) {
+    public ChatRoom findChatRoomWithRoomUserByRoomId(String roomUuid) {
         return queryFactory
                 .selectFrom(chatRoom)
                 .leftJoin(chatRoom.roomUsers).fetchJoin()
@@ -51,13 +51,9 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
                 .set(roomUser.userState, userState)
                 .where(
                         roomUser.userUuid.eq(chatDto.getSenderUuid()),
-                        roomUser.userUuid.in(
-                                JPAExpressions.select(roomUser.userUuid)
-                                        .distinct()
-                                        .from(chatRoom)
-                                        .join(chatRoom.roomUsers,roomUser)
+                        roomUser.chatRoom.eq(
+                                JPAExpressions.selectFrom(chatRoom)
                                         .where(chatRoom.roomUuid.eq(chatDto.getRoomUuid()))
-
                         )
                 ).execute();
     }
@@ -82,13 +78,9 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
                 .set(roomUser.readMessageCount, roomUser.readMessageCount.add(1))
                 .where(
                         roomUser.userState.eq(RoomUserState.IN),
-                        roomUser.userUuid.in(
-                                JPAExpressions.select(roomUser.userUuid)
-                                        .distinct()
-                                        .from(chatRoom)
-                                        .join(chatRoom.roomUsers,roomUser)
+                        roomUser.chatRoom.eq(
+                                JPAExpressions.selectFrom(chatRoom)
                                         .where(chatRoom.roomUuid.eq(chatDto.getRoomUuid()))
-
                         )
                 ).execute();
 
@@ -108,13 +100,9 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
                                 .where(chatRoom.roomUuid.eq(chatDto.getRoomUuid())))
                 .where(
                         roomUser.userUuid.eq(chatDto.getSenderUuid()),
-                        roomUser.userUuid.in(
-                                JPAExpressions.select(roomUser.userUuid)
-                                        .distinct()
-                                        .from(chatRoom)
-                                        .join(chatRoom.roomUsers,roomUser)
-                                        .where( chatRoom.roomUuid.eq(chatDto.getRoomUuid()))
-
+                        roomUser.chatRoom.eq(
+                                JPAExpressions.selectFrom(chatRoom)
+                                        .where(chatRoom.roomUuid.eq(chatDto.getRoomUuid()))
                         )
                 ).execute();
     }

@@ -22,7 +22,7 @@ public class ChatRoomController {
 
     @PostMapping("/send")
     public void publishMessageToTopic(@RequestBody ChatDto chatDto) throws ExecutionException, InterruptedException {
-        if(chatDto.getType()==ChatDto.MessageType.TALK) chatRoomService.updateRecentMessageData(chatDto);
+        if(chatDto.getType()==ChatDto.MessageType.TALK) chatRoomService.processSendMessage(chatDto);
         else if(chatDto.getType()==ChatDto.MessageType.ENTER) chatDto.updateEnterMessage();
 
         kafkaTemplate.send(KafkaConfig.TOPIC_NAME,chatDto).get(); // Exception 처리하기 (try-catch)

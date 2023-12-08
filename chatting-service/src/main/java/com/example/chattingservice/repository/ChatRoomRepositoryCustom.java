@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ChatRoomRepositoryCustom {
 
-    ChatRoom findByRoomId(String roomUuid);
+    ChatRoom findChatRoomWithRoomUserByRoomId(String roomUuid);
 
     long updateRoomUserState(RoomUserState userState, ChatDto chatDto);
 

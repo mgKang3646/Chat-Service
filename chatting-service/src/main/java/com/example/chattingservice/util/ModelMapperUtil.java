@@ -1,7 +1,9 @@
 package com.example.chattingservice.util;
 
 
+import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.dto.ChatRoomDto;
+import com.example.chattingservice.entity.ChatMessage;
 import com.example.chattingservice.vo.ChatRoomRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.dto.RoomUserDto;
@@ -44,6 +46,14 @@ public class ModelMapperUtil {
     public List<ChatRoomResponse> convertToChatRoomResponseList(List<ChatRoom> chatRoomList,String sender){
         return convertChatRoomDtoListToChatRoomResponseList(convertChatRoomListToChatRoomDtoList(chatRoomList),sender);
     }
+
+    public ChatMessage convertToChatMessage(ChatDto chatDto, ChatRoom chatRoom){
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        ChatMessage chatMessage = mapper.map(chatDto, ChatMessage.class);
+        chatMessage.updateChatRoom(chatRoom);
+        return chatMessage;
+    }
+
     private ChatRoom convertChatRoomDtoToChatRoom(ChatRoomDto chatRoomDto){
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         ChatRoom chatRoom = mapper.map(chatRoomDto, ChatRoom.class);

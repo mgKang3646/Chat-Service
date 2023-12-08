@@ -8,8 +8,6 @@ class ChattingServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
-
-
 	}
 
 }

@@ -3,8 +3,10 @@ package com.example.chattingservice.service;
 
 import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.entity.ChatMessage;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
+import com.example.chattingservice.repository.ChatMessageRepository;
 import com.example.chattingservice.repository.ChatRoomRepository;
 import com.example.chattingservice.repository.RoomUserRepository;
 import com.example.chattingservice.util.ModelMapperUtil;
@@ -24,6 +26,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ModelMapperUtil modelMapperUtil;
     private final ChatRoomRepository chatRoomRepository;
     private final RoomUserRepository roomUserRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Override
     public ChatRoomResponse createChatRoom(ChatRoomRequest chatRoomRequest) {
@@ -41,8 +44,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void updateRecentMessageData(ChatDto chatDto) {
-        chatRoomRepository.updateRecentMessageData(chatDto);
+    public void processSendMessage(ChatDto chatDto) {
+        chatRoomRepository.updateRecentMessageData(chatDto); // ChatRoom 데이터 update ( ChatMessage 엔티티 생성으로 인해 쿼리 조회로 가능해질 듯 => 리팩토링 필요 )
+//        ChatRoom chatRoom = chatRoomRepository.findChatRoomByRoomUuid(chatDto.getRoomUuid());  // 1. roomUuid chatRoom 조회
+//        ChatMessage chatMessage = modelMapperUtil.convertToChatMessage(chatDto,chatRoom);// 2. ChatDto -> ChatMessage로 변환 후 chatRoom 세팅
+//        chatMessageRepository.save(chatMessage);// 3. save
     }
 
     @Override
@@ -82,11 +88,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomRepository.updateRoomUserState(RoomUserState.EXITED, chatDtoExit); // User 상태 변경하기
 
         return chatDtoExit;
-    }
-
-    @Override
-    public String findUsername(String roomUUID, String userUUID) {
-        return chatRoomRepository.findUsernameByRoomIdAndUserId(roomUUID,userUUID);
     }
 
     private String findChatRoomUuID(ChatRoomRequest chatRoomRequest) {

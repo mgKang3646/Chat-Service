@@ -7,6 +7,7 @@ import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
 import com.example.chattingservice.repository.ChatRoomRepository;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,8 @@ public class QueryDslTest {
 
     JPAQueryFactory queryFactory;
 
-    private String roomUuid;
+    private String roomUuid1;
+    private String roomUuid2;
     private String roomUserId1;
     private String roomUserId2;
     private String userId1;
@@ -47,30 +49,51 @@ public class QueryDslTest {
 
         queryFactory =  new JPAQueryFactory(em);
 
-        roomUuid = UUID.randomUUID().toString();
+        roomUuid1 = UUID.randomUUID().toString();
+        roomUuid2 = UUID.randomUUID().toString();
+
         roomUserId1 = UUID.randomUUID().toString();
         roomUserId2 = UUID.randomUUID().toString();
         userId1 = UUID.randomUUID().toString();
         userId2 = UUID.randomUUID().toString();
 
-        ChatRoom chatRoomEntity = ChatRoom.getInstance(roomUuid);
-        chatRoomEntity.setMessageCount(10);
+        ChatRoom chatRoomEntity1 = ChatRoom.getInstance(roomUuid1);
+        chatRoomEntity1.setMessageCount(10);
+
+        ChatRoom chatRoomEntity2 = ChatRoom.getInstance(roomUuid2);
+        chatRoomEntity2.setMessageCount(10);
 
         RoomUser roomUser1 = RoomUser.builder()
                 .userUuid(userId1)
                 .userNickname("mingu")
-                .chatRoom(chatRoomEntity)
+                .chatRoom(chatRoomEntity1)
                 .build();
 
         RoomUser roomUser2 = RoomUser.builder()
                 .userUuid(userId2)
                 .userNickname("chulsu")
-                .chatRoom(chatRoomEntity)
+                .chatRoom(chatRoomEntity1)
                 .build();
 
-        em.persist(chatRoomEntity);
+        RoomUser roomUser3 = RoomUser.builder()
+                .userUuid(userId1)
+                .userNickname("mingu")
+                .chatRoom(chatRoomEntity2)
+                .build();
+
+        RoomUser roomUser4 = RoomUser.builder()
+                .userUuid(userId2)
+                .userNickname("chulsu")
+                .chatRoom(chatRoomEntity2)
+                .build();
+
+        em.persist(chatRoomEntity1);
+        em.persist(chatRoomEntity2);
+
         em.persist(roomUser1);
         em.persist(roomUser2);
+        em.persist(roomUser3);
+        em.persist(roomUser4);
 
         // QueryDSL은 JPQL을 전송한다. JPQL은 영속성컨텍스트를 거치지 않기 때문에 em.flush로 DB와 영속성 컨텍스트를 동기화 해놓아야 한다.
         // JPQL을 사용할 때는 반드시 영속성 컨텍스트와 DB를 동기화하고 영속성 컨텍스트를 클리어 한 뒤에 사용한다. !!!!
@@ -87,10 +110,8 @@ public class QueryDslTest {
         ChatRoom proxyChatRoom = queryFactory.selectFrom(chatRoom)
                 .leftJoin(chatRoom.roomUsers)
                 .fetchJoin()
-                .where(chatRoom.roomUuid.eq(roomUuid))
+                .where(chatRoom.roomUuid.eq(roomUuid1))
                 .fetchOne();
-
-
     }
 
     @Test
@@ -102,7 +123,7 @@ public class QueryDslTest {
                 .set(roomUser.userState,RoomUserState.IN)
                 .where(
                         roomUser.userUuid.eq(userId1),
-                        roomUser.chatRoom.roomUuid.eq(roomUuid)
+                        roomUser.chatRoom.roomUuid.eq(roomUuid1)
                 ).execute();
 
         System.out.println("수정된 행의 개수 : " + count);
@@ -213,7 +234,7 @@ public class QueryDslTest {
 
         ChatDto chatDto = ChatDto.builder()
                 .senderUuid(userId1)
-                .roomUuid(roomUuid)
+                .roomUuid(roomUuid1)
                 .build();
 
         long execute = queryFactory
@@ -221,12 +242,9 @@ public class QueryDslTest {
                 .set(roomUser.userState, RoomUserState.IN)
                 .where(
                         roomUser.userUuid.eq(chatDto.getSenderUuid()),
-                        roomUser.userUuid.in(
-                                JPAExpressions.select(roomUser.userUuid)
-                                        .from(chatRoom)
-                                        .join(chatRoom.roomUsers,roomUser)
-                                        .where( chatRoom.roomUuid.eq(roomUuid))
-
+                        roomUser.chatRoom.eq(
+                                JPAExpressions.selectFrom(chatRoom)
+                                        .where(chatRoom.roomUuid.eq(chatDto.getRoomUuid()))
                         )
                 ).execute();
 
@@ -234,13 +252,45 @@ public class QueryDslTest {
     }
 
     @Test
-    public void findUsersUuidTest(){
+    public void selectUserStateTest(){
 
-        List<String> userList = queryFactory.select(roomUser.userUuid)
+        ChatDto chatDto = ChatDto.builder()
+                .senderUuid(userId1)
+                .roomUuid(roomUuid1)
+                .build();
+
+        List<String> roomUsers = queryFactory.select(roomUser.userUuid)
+                .distinct()
                 .from(chatRoom)
                 .join(chatRoom.roomUsers, roomUser)
                 .where(
-                        chatRoom.roomUuid.eq(roomUuid)
+                        roomUser.userUuid.eq(chatDto.getSenderUuid()),
+                        roomUser.userUuid.in(
+                                JPAExpressions.select(roomUser.userUuid)
+                                        .distinct()
+                                        .from(chatRoom)
+                                        .join(chatRoom.roomUsers,roomUser)
+                                        .where( chatRoom.roomUuid.eq(roomUuid1))
+
+                        )
+                ).fetch();
+
+        for (String user : roomUsers) {
+            System.out.println("selectUserStateTest : " + user);
+        }
+
+
+    }
+
+    @Test
+    public void findUsersUuidTest(){
+
+        List<String> userList = queryFactory.select(roomUser.userUuid)
+                .distinct()
+                .from(chatRoom)
+                .join(chatRoom.roomUsers, roomUser)
+                .where(
+                        chatRoom.roomUuid.eq(roomUuid1)
                 ).fetch();
 
         for (String s : userList) {

@@ -9,7 +9,7 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        #        show_sql: true
+        #show_sql: true
         format_sql: true
         use_sql_comments: true  #주석으로 QueryDSL이 변환된 JPQL 확인하는 설정
 logging.level:
