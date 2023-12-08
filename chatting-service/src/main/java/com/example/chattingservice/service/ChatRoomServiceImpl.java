@@ -46,9 +46,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public void processSendMessage(ChatDto chatDto) {
         chatRoomRepository.updateRecentMessageData(chatDto); // ChatRoom 데이터 update ( ChatMessage 엔티티 생성으로 인해 쿼리 조회로 가능해질 듯 => 리팩토링 필요 )
-//        ChatRoom chatRoom = chatRoomRepository.findChatRoomByRoomUuid(chatDto.getRoomUuid());  // 1. roomUuid chatRoom 조회
-//        ChatMessage chatMessage = modelMapperUtil.convertToChatMessage(chatDto,chatRoom);// 2. ChatDto -> ChatMessage로 변환 후 chatRoom 세팅
-//        chatMessageRepository.save(chatMessage);// 3. save
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomByRoomUuid(chatDto.getRoomUuid());  // 1. roomUuid chatRoom 조회
+        ChatMessage chatMessage = modelMapperUtil.convertToChatMessage(chatDto,chatRoom);// 2. ChatDto -> ChatMessage로 변환 후 chatRoom 세팅
+        chatMessageRepository.save(chatMessage);// 3. save
     }
 
     @Override

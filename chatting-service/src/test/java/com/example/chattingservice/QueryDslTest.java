@@ -9,6 +9,7 @@ import com.example.chattingservice.repository.ChatRoomRepository;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,8 @@ public class QueryDslTest {
     private String roomUserId2;
     private String userId1;
     private String userId2;
+    private String userId3;
+
 
 
     @BeforeEach
@@ -56,6 +59,7 @@ public class QueryDslTest {
         roomUserId2 = UUID.randomUUID().toString();
         userId1 = UUID.randomUUID().toString();
         userId2 = UUID.randomUUID().toString();
+        userId3 = UUID.randomUUID().toString();
 
         ChatRoom chatRoomEntity1 = ChatRoom.getInstance(roomUuid1);
         chatRoomEntity1.setMessageCount(10);
@@ -82,8 +86,8 @@ public class QueryDslTest {
                 .build();
 
         RoomUser roomUser4 = RoomUser.builder()
-                .userUuid(userId2)
-                .userNickname("chulsu")
+                .userUuid(userId3)
+                .userNickname("jihee")
                 .chatRoom(chatRoomEntity2)
                 .build();
 
@@ -283,19 +287,28 @@ public class QueryDslTest {
     }
 
     @Test
-    public void findUsersUuidTest(){
+    public void findChatRoomTest(){
 
-        List<String> userList = queryFactory.select(roomUser.userUuid)
-                .distinct()
-                .from(chatRoom)
-                .join(chatRoom.roomUsers, roomUser)
+        String roomUuid = queryFactory
+                .select(roomUser.chatRoom.roomUuid)
+                .from(roomUser)
+                .leftJoin(roomUser.chatRoom, chatRoom)
                 .where(
-                        chatRoom.roomUuid.eq(roomUuid1)
-                ).fetch();
+                        roomUser.userUuid.eq(userId1),
+                        roomUser.chatRoom.roomUuid.in(
+                                JPAExpressions
+                                        .select(roomUser.chatRoom.roomUuid)
+                                        .from(roomUser)
+                                        .leftJoin(roomUser.chatRoom, chatRoom)
+                                        .where(
+                                                roomUser.userUuid.eq(userId2)
+                                        )
+                        )
+                ).fetchOne();
 
-        for (String s : userList) {
-            System.out.println(s);
-        }
+        System.out.println(roomUuid);
+
 
     }
+
 }

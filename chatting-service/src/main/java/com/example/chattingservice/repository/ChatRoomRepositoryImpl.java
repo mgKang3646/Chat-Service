@@ -114,13 +114,21 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
         String userId2 = roomUserDtoList.get(1).getUserUuid();
 
         ChatRoom findChatRoom = queryFactory
-                .selectFrom(chatRoom)
-                .leftJoin(chatRoom.roomUsers, roomUser).fetchJoin()
+                .select(roomUser.chatRoom)
+                .from(roomUser)
+                .leftJoin(roomUser.chatRoom, chatRoom)
                 .where(
-                        chatRoom.roomUsers.any().userUuid.eq(userId1),
-                        chatRoom.roomUsers.any().userUuid.eq(userId2)
-                )
-                .fetchOne();
+                        roomUser.userUuid.eq(userId1),
+                        roomUser.chatRoom.roomUuid.in(
+                                JPAExpressions
+                                        .select(roomUser.chatRoom.roomUuid)
+                                        .from(roomUser)
+                                        .leftJoin(roomUser.chatRoom, chatRoom)
+                                        .where(
+                                                roomUser.userUuid.eq(userId2)
+                                        )
+                        )
+                ).fetchOne();
 
         return Optional.ofNullable(findChatRoom).orElse(ChatRoom.getInstance("0"));
 
