@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -329,28 +330,39 @@ public class QueryDslTest {
     @Test
     public void getChatMessageListTest(){
 
-        PageRequest pageRequest = PageRequest.of(0,8, Sort.Direction.DESC,"id");
-        Slice<ChatMessage> slicePage = chatMessageRepository.findChatMessagesByRoomUuid(roomUuid1, pageRequest);
+        PageRequest pageRequest = PageRequest.of(0,8, Sort.Direction.DESC,"messageTime");
+        //Slice<ChatMessage> slicePage = chatMessageRepository.findChatMessagesByRoomUuid(roomUuid1, pageRequest);
+        LocalDateTime beforeDate = LocalDateTime.of(2023,12,9,12,16,12);
+
+        List<ChatMessage> chatMessageList = queryFactory
+                .selectFrom(chatMessage)
+                .where(
+                        chatMessage.roomUuid.eq(roomUuid1),
+                        chatMessage.messageTime.lt(beforeDate)
+                ).limit(pageRequest.getPageSize() + 1)
+                .orderBy(chatMessage.messageTime.asc())
+                .fetch();
+
 
         System.out.println("====================Entity List======================");
-        List<ChatMessage> chatMessageList = slicePage.getContent();
-        chatMessageList.forEach(chatMsg ->{System.out.println(chatMsg.toString());});
-
-        System.out.println("====================DTO List======================");
-        Slice<ChatDto> chatDtoSlice = slicePage.map( chatMessage -> chatMessage.convert());
-        List<ChatDto> content = chatDtoSlice.getContent();
-
-        content.forEach( chatDto -> {
-            System.out.println(chatDto.toString());
-        });
-
+        chatMessageList.forEach(chatMsg ->{System.out.println(chatMsg.getMessageTime());});
 
     }
 
+
+//    @Test
+//    public void sliceTest(){
+//        long id = 4;
+//        PageRequest pageRequest = PageRequest.of(0,8, Sort.Direction.DESC,"id"); // 정렬 속성 날짜로 변경하기
+//        Slice<ChatMessage> sliceInstance = chatMessageRepository.findChatMessageListByRoomUuid(roomUuid1, pageRequest, id);
+//        Slice<ChatDto> map = sliceInstance.map(cm -> cm.convert());
+//
+//
+//    }
     public void initMessages(){
         chatMessageRepository.save(
                 ChatMessage.builder()
-                        .messageTime("2023-12-08 23:40:03")
+                        .messageTime(LocalDateTime.of(2023,12,9,12,12,12))
                         .message("ㄷㄷㄷㄷㅌㅌㅋ!!!! ㅎㅎㅎ")
                         .senderNickname("mingu")
                         .senderUuid("1123123123123")
@@ -361,7 +373,7 @@ public class QueryDslTest {
         );
         chatMessageRepository.save(
                 ChatMessage.builder()
-                        .messageTime("2023-12-08 23:40:03")
+                        .messageTime(LocalDateTime.of(2023,12,9,12,13,12))
                         .message("반가ㅌㅌㅌㅌㅌ워!!!! ㅎㅎㅎ")
                         .senderNickname("mingu")
                         .senderUuid("1123123123123")
@@ -372,7 +384,7 @@ public class QueryDslTest {
         );
         chatMessageRepository.save(
                 ChatMessage.builder()
-                        .messageTime("2023-12-08 23:40:03")
+                        .messageTime(LocalDateTime.of(2023,12,9,12,14,12))
                         .message("반가워ㄷㄷㄷㄷ!!!! ㅎㅎㅎ")
                         .senderNickname("jihee")
                         .senderUuid("1123123132323123")
@@ -383,7 +395,7 @@ public class QueryDslTest {
         );
         chatMessageRepository.save(
                 ChatMessage.builder()
-                        .messageTime("2023-12-08 23:40:03")
+                        .messageTime(LocalDateTime.of(2023,12,9,12,15,12))
                         .message("ㅇㅇㅇㅇ!!!! ㅎㅎㅎ")
                         .senderNickname("minsu")
                         .senderUuid("11231232222123123")
@@ -394,7 +406,7 @@ public class QueryDslTest {
         );
         chatMessageRepository.save(
                 ChatMessage.builder()
-                        .messageTime("2023-12-08 23:40:03")
+                        .messageTime(LocalDateTime.of(2023,12,9,12,16,12))
                         .message("ㅋㅋㅋㅋㅋ!!!! ㅎㅎㅎ")
                         .senderNickname("minsu")
                         .senderUuid("11231232222123123")
@@ -405,7 +417,7 @@ public class QueryDslTest {
         );
         chatMessageRepository.save(
                 ChatMessage.builder()
-                        .messageTime("2023-12-08 23:40:03")
+                        .messageTime(LocalDateTime.of(2023,12,9,12,17,12))
                         .message("ㅎㅎㅎㅎㅎ!!!! ㅎㅎㅎ")
                         .senderNickname("minsu")
                         .senderUuid("11231232222123123")
@@ -416,7 +428,7 @@ public class QueryDslTest {
         );
         chatMessageRepository.save(
                 ChatMessage.builder()
-                        .messageTime("2023-12-08 23:40:03")
+                        .messageTime(LocalDateTime.of(2023,12,9,12,18,12))
                         .message("안녕!!!! ㅎㅎㅎ")
                         .senderNickname("minsu")
                         .senderUuid("11231232222123123")

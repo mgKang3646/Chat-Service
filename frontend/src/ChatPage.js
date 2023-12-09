@@ -13,33 +13,35 @@ function Chat(){
     const roomId = location.state?.roomId;
     const ownerName = location.state?.ownerName;
     const stompClient = useRef(null);
-    const [messages, setMessages] = useState([]); // 상태를 관리하는 빈 배열 생성 
+    const [chatList, setChatList] = useState([]); // 상태를 관리하는 빈 배열 생성 
     const [input, setInput] = useState('');
     const navigate = useNavigate();
 
+    // 채팅내역 무한 스크롤 변수
+    const [beforeTime, setBeforeTime] = useState(getKoreanTimeISO());
+    const [isScrollLast, setIsScrollLast] = useState(false);
+
     const connect = () => {
-        let socket = new SockJS(stompUrl);
+        const socket = new SockJS(stompUrl);
         stompClient.current = Stomp.over(socket);
         stompClient.current.connect({}, onConnected, onError);
-
         // let jwtHeader = {
         //   'Authorization' : jwt // 헤더 추가가 안됨..... 나중에 ...
         // };
-
+        
     }
 
     useEffect(()=>{
-        connect();
+         connect();
+     },[]); 
 
-    },[]); 
 
     const handleInputChange= (event) =>{
         setInput(event.target.value);
     }
 
     // 요청을 3번 보낸다 ( 1. 구독, 2. 세션셜정 3.입장 메시지 ) => 요청 횟수를 줄일 수 있는 방법은 없을까?
-    function onConnected() {
-        
+    function onConnected() { 
         stompClient.current.subscribe('/sub/chat/room/' + roomId, onMessageReceived,{'id':roomId}); // 구독 요청하기
 
         let sendMsgForm = {
@@ -51,7 +53,6 @@ function Chat(){
 
         setSessionOptions(sendMsgForm); // 세션설정정보 전송하기 
         sendEnterMessage(sendMsgForm); // 입장 메시지 전송하기
-        
     }
 
     function setSessionOptions(sendMsgForm){
@@ -72,7 +73,7 @@ function Chat(){
     const sendMessage = async(event)=>{
         
         const chatMsg = input.trim();
-        const currentTime = getCurrentTime();
+        const currentTime = getKoreanTimeISO();
 
         let sendMsgForm = {
             roomUuid: roomId,
@@ -156,41 +157,44 @@ function Chat(){
         console.log(chat)
 
         if (chat.type === 'ENTER') {  // chatType 이 enter 라면 아래 내용
-            setMessages(messages=>[...messages,chat.message]);
+            setChatList(chatList=>[...chatList,chat]);
 
         } else if (chat.type === 'LEAVE') { // chatType 가 leave 라면 아래 내용
             chat.content = chat.sender + chat.message;
 
 
         } else { // chatType 이 talk 라면 아래 내용
-            setMessages(messages=>[...messages, chat.message]);
+            setChatList(chatList=>[...chatList, chat]);
         }
     }
 
-    const getCurrentTime = () => {
+    function getKoreanTimeISO() {
         const now = new Date();
-        const formattedDateTime = now.toISOString();
+        const koreanTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+        console.log("현재 시간 : ", koreanTime);
+        return koreanTime.toISOString();
+      }
     
-        console.log("현재시간 : " + formattedDateTime);
-    
-        return formattedDateTime;
-    }
-    
-    // const getCurrentTime = () => {
-    //     const now = new Date();
-    //     const year = now.getFullYear();
-    //     const month = now.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
-    //     const date = now.getDate();
-    //     const hours = now.getHours();
-    //     const minutes = now.getMinutes();
-    //     const seconds = now.getSeconds(); // 초를 가져옵니다.
-    //     const formattedDateTime = `${year}-${month.toString().padStart(2, '0')}-${date.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
-    //     console.log("현재시간 : " + formattedDateTime);
-        
-    //     return formattedDateTime;
-    // }
+    const getBeforeChatList = async(event) => {
 
+        if(!isScrollLast){
+            let url = '/chatting-service/api/chat?roomUuid='+roomId+'&beforeTime='+beforeTime;
+            const response = await axios.get(url);
+    
+            if(response.status == 200){
+                console.log(response.data);
+                let newChatList = response.data.content;
+                if(newChatList.length !== 0){
+                    setBeforeTime(newChatList[0].messageTime);
+                    setIsScrollLast(response.data.last);
+                    setChatList(chatList=>[...newChatList, ...chatList]);
+                }
+            }
+        }
+        
+        event.preventDefault();
+        
+    }
 
 
     return (
@@ -201,10 +205,10 @@ function Chat(){
                     <h2>{ownerName}</h2>
                     <button className='round-button' onClick={exitChatRoom}> 나가기 </button>
                 </div>
-                <div className="messages">
-                    {messages.map((message, index) => (
+                <div className="chatList">
+                    {chatList.map((chat, index) => (
                         <div key={index} className="message">
-                            {message}
+                            {chat.message}
                         </div>
                     ))}
                 </div>
@@ -216,6 +220,8 @@ function Chat(){
                         placeholder='채팅을 입력해주세요'
                     />
                     <button onClick={sendMessage}> 전송 </button>
+                    <button onClick={getBeforeChatList}> 대화내역 가져오기 </button>
+
                 </div>
             </div>
         </div>

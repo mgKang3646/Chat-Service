@@ -1,13 +1,18 @@
 package com.example.chattingservice.controller;
 import com.example.chattingservice.config.KafkaConfig;
 import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.entity.ChatMessage;
 import com.example.chattingservice.vo.ChatRoomRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Slice;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -40,9 +45,9 @@ public class ChatRoomController {
         return chatRoomService.findOrCreateChatRoom(chatRoomRequest);
     }
 
-    @GetMapping("/api/chat/{roomUuid}")
-    public List<ChatDto> findAllChatList(@PathVariable String roomUuid){
-        return chatRoomService.findAllChatList(roomUuid);
+    @GetMapping("/api/chat")
+    public Slice<ChatDto> findAllChatList(@RequestParam String roomUuid, @RequestParam String beforeTime ){
+        return chatRoomService.findAllChatList(roomUuid,LocalDateTime.parse(beforeTime, DateTimeFormatter.ISO_DATE_TIME));
     }
 
 

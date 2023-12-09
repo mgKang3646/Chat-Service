@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -94,10 +95,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public List<ChatDto> findAllChatList(String roomUuid) {
-        PageRequest pageRequest = PageRequest.of(0,8, Sort.Direction.DESC,"messageTime"); // 정렬 속성 날짜로 변경하기
-        Slice<ChatMessage> chatMessages = chatMessageRepository.findChatMessagesByRoomUuid(roomUuid,pageRequest);
-        return chatMessages.map( chatMessage -> chatMessage.convert()).getContent();
+    public Slice<ChatDto> findAllChatList(String roomUuid, LocalDateTime beforeTime) {
+        PageRequest pageRequest = PageRequest.of(0,4, Sort.Direction.DESC,"messageTime"); // 정렬 속성 날짜로 변경하기
+        Slice<ChatMessage> chatSliceMessages = chatMessageRepository.findChatMessageListByRoomUuid(roomUuid, pageRequest, beforeTime);
+        return chatSliceMessages.map(chatMessage -> chatMessage.convert());
     }
 
     private String findChatRoomUuID(ChatRoomRequest chatRoomRequest) {
