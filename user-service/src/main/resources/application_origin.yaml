@@ -7,10 +7,10 @@ spring:
   messages:
     basename: errors
   datasource:
-    url: jdbc:mysql://localhost:3306/chat-database
-    username: chat-user
-    password: chat-user
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   h2:
     console:
       enabled: true

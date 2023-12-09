@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @Builder
-public class RoomUser {
+public class RoomUser extends BaseTimeEntity{
 
     @Id
     @GeneratedValue

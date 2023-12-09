@@ -8,6 +8,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import static com.example.chattingservice.entity.QChatRoom.chatRoom;
@@ -48,6 +49,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
     public long updateRoomUserState(RoomUserState userState, ChatDto chatDto) {
         return queryFactory
                 .update(roomUser)
+                .set(roomUser.updatedDate, LocalDateTime.now())
                 .set(roomUser.userState, userState)
                 .where(
                         roomUser.userUuid.eq(chatDto.getSenderUuid()),
@@ -65,6 +67,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
         // ChatRoom Entity 메시지 데이터 수정하기
         queryFactory
                 .update(chatRoom)
+                .set(chatRoom.updatedDate, LocalDateTime.now())
                 .set(chatRoom.recentMessage,chatDto.getMessage())
                 .set(chatRoom.recentDate,chatDto.getMessageTime())
                 .set(chatRoom.messageCount,chatRoom.messageCount.add(1))
@@ -75,6 +78,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
         // RoomUser Entity 메시지 데이터 수정하기
         queryFactory
                 .update(roomUser)
+                .set(roomUser.updatedDate, LocalDateTime.now())
                 .set(roomUser.readMessageCount, roomUser.readMessageCount.add(1))
                 .where(
                         roomUser.userState.eq(RoomUserState.IN),
@@ -94,6 +98,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
     public long updateReadMessageCount(ChatDto chatDto) {
         return queryFactory
                 .update(roomUser)
+                .set(roomUser.updatedDate, LocalDateTime.now())
                 .set(roomUser.readMessageCount,
                         JPAExpressions.select(chatRoom.messageCount)
                                 .from(chatRoom)

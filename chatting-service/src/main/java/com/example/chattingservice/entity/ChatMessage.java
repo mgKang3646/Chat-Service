@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @Setter
-public class ChatMessage {
+public class ChatMessage extends BaseTimeEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "message_id")
     private Long id;
     @Column(name="message")
