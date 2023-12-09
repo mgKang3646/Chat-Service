@@ -34,8 +34,8 @@ public class ChatRoomController {
     }
 
     // 채팅리스트 화면 조회
-    @GetMapping("/{userId}/rooms")
-    public List<ChatRoomResponse> findAllChatRoomsByUserId(@PathVariable String userId){
+    @GetMapping("/api/chat/rooms")
+    public List<ChatRoomResponse> findAllChatRoomsByUserId(@RequestHeader("userUuid") String userId){
         return chatRoomService.findAllChatRoomByUserId(userId);
     }
 

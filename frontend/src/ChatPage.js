@@ -171,7 +171,6 @@ function Chat(){
     function getKoreanTimeISO() {
         const now = new Date();
         const koreanTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
-        console.log("현재 시간 : ", koreanTime);
         return koreanTime.toISOString();
       }
     

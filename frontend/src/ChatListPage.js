@@ -20,10 +20,13 @@ function ChatListPage(){
 
         else{
             try{
-                const userId = localStorage.getItem('userId');
-                const url = '/chatting-service/'+userId+'/rooms'
+                const userId = localStorage.getItem('userId'); 
+                const url = '/chatting-service/api/chat/rooms'
                 const response = await axios.get(url,{
-                    headers: {Authorization: jwt}
+                    headers: {
+                        Authorization: jwt,
+                        userUuid: userId
+                    }
                 });
 
                 if(response.status === 200){
