@@ -180,7 +180,7 @@ function Chat(){
             let url = '/chatting-service/api/chat?roomUuid='+roomId+'&beforeTime='+beforeTime;
             const response = await axios.get(url);
     
-            if(response.status == 200){
+            if(response.status === 200){
                 console.log(response.data);
                 let newChatList = response.data.content;
                 if(newChatList.length !== 0){
