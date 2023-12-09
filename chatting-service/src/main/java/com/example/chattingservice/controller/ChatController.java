@@ -47,6 +47,7 @@ public class ChatController {
     }
 
     // 세션이 종료된 경우
+    // 세션이 자동으로 종료되는 경우 -> StompHeaderAccessor에 데이터가 담기지 않아 NullPointer Exception이 발생한다.
     @EventListener
     public void webSocketDisconnectionListener(SessionDisconnectEvent event){
         StompHeaderAccessor stompHeaderAccessor = StompHeaderAccessor.wrap(event.getMessage());

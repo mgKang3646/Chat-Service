@@ -2,6 +2,7 @@ package com.example.chattingservice.entity;
 
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +25,16 @@ public class ChatRoom {
     private String recentMessage;
 
     @Column(name = "recent_date")
-    private String recentDate;
+    private LocalDateTime recentDate;
 
     @Column(name = "message_count", nullable = false)
     private int messageCount;
 
     @OneToMany(mappedBy = "chatRoom")
     private List<RoomUser> roomUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy="chatRoom")
+    private List<ChatMessage> chatMessages = new ArrayList<>();
 
     public static ChatRoom getInstance(String roomUuid){
         ChatRoom chatRoom = new ChatRoom();

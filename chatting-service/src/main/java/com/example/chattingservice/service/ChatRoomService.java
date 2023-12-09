@@ -24,6 +24,8 @@ public interface ChatRoomService {
 
     public ChatDto doExitUserProcess(StompHeaderAccessor stompHeaderAccessor);
 
+    public List<ChatDto> findAllChatList(String roomUuid);
+
 
 
 }

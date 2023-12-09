@@ -14,6 +14,9 @@ import com.example.chattingservice.vo.ChatRoomRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.vo.RoomUserState;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +91,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomRepository.updateRoomUserState(RoomUserState.EXITED, chatDtoExit); // User 상태 변경하기
 
         return chatDtoExit;
+    }
+
+    @Override
+    public List<ChatDto> findAllChatList(String roomUuid) {
+        PageRequest pageRequest = PageRequest.of(0,8, Sort.Direction.DESC,"messageTime"); // 정렬 속성 날짜로 변경하기
+        Slice<ChatMessage> chatMessages = chatMessageRepository.findChatMessagesByRoomUuid(roomUuid,pageRequest);
+        return chatMessages.map( chatMessage -> chatMessage.convert()).getContent();
     }
 
     private String findChatRoomUuID(ChatRoomRequest chatRoomRequest) {

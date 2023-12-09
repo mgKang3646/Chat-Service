@@ -4,6 +4,7 @@ package com.example.chattingservice.dto;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class ChatDto implements Serializable {
     private String senderUuid;
     private String senderNickname;
     private String message;
-    private String messageTime;
+    private LocalDateTime messageTime;
 
     public void updateEnterMessage(){
         setMessage(getSenderNickname() + "님이 입장하였습니다.");
@@ -38,7 +39,5 @@ public class ChatDto implements Serializable {
                 .type(MessageType.EXITED)
                 .build();
     }
-
-
 
 }

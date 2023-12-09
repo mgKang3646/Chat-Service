@@ -167,19 +167,29 @@ function Chat(){
         }
     }
 
-    const getCurrentTime = ()=>{
+    const getCurrentTime = () => {
         const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
-        const date = now.getDate();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const formattedDateTime = `${year}-${month.toString().padStart(2, '0')}-${date.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-
+        const formattedDateTime = now.toISOString();
+    
         console.log("현재시간 : " + formattedDateTime);
-        
+    
         return formattedDateTime;
     }
+    
+    // const getCurrentTime = () => {
+    //     const now = new Date();
+    //     const year = now.getFullYear();
+    //     const month = now.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
+    //     const date = now.getDate();
+    //     const hours = now.getHours();
+    //     const minutes = now.getMinutes();
+    //     const seconds = now.getSeconds(); // 초를 가져옵니다.
+    //     const formattedDateTime = `${year}-${month.toString().padStart(2, '0')}-${date.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    //     console.log("현재시간 : " + formattedDateTime);
+        
+    //     return formattedDateTime;
+    // }
 
 
 

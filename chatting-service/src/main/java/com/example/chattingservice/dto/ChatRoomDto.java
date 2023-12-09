@@ -3,6 +3,7 @@ package com.example.chattingservice.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class ChatRoomDto {
 
     private String roomUuid;
     private String recentMessage;
-    private String recentDate;
+    private LocalDateTime recentDate;
     private int messageCount;
     private List<RoomUserDto> roomUsers;
 

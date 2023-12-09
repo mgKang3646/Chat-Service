@@ -5,6 +5,8 @@ import com.example.chattingservice.dto.ChatRoomDto;
 import com.example.chattingservice.dto.RoomUserDto;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -16,7 +18,7 @@ public class ChatRoomResponse {
     private String targetUuid;
     private String targetNickname;
     private String recentMessage;
-    private String recentDate;
+    private LocalDateTime recentDate;
     private int messageNotRead;
 
     public static ChatRoomResponse getInstance(String roomUuid){

@@ -2,6 +2,8 @@ package com.example.chattingservice;
 
 
 import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.entity.ChatMessage;
+import com.example.chattingservice.repository.ChatMessageRepository;
 import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
@@ -14,6 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
@@ -21,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.example.chattingservice.entity.QChatMessage.chatMessage;
 import static com.example.chattingservice.entity.QChatRoom.chatRoom;
 import static com.example.chattingservice.entity.QRoomUser.roomUser;
 
@@ -31,6 +37,9 @@ public class QueryDslTest {
 
     @Autowired
     EntityManager em;
+
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
 
     @Autowired
     ChatRoomRepository chatRoomRepository;
@@ -44,6 +53,8 @@ public class QueryDslTest {
     private String userId1;
     private String userId2;
     private String userId3;
+    private ChatRoom chatRoomEntity1;
+    private ChatRoom chatRoomEntity2;
 
 
 
@@ -61,10 +72,10 @@ public class QueryDslTest {
         userId2 = UUID.randomUUID().toString();
         userId3 = UUID.randomUUID().toString();
 
-        ChatRoom chatRoomEntity1 = ChatRoom.getInstance(roomUuid1);
+        chatRoomEntity1 = ChatRoom.getInstance(roomUuid1);
         chatRoomEntity1.setMessageCount(10);
 
-        ChatRoom chatRoomEntity2 = ChatRoom.getInstance(roomUuid2);
+        chatRoomEntity2 = ChatRoom.getInstance(roomUuid2);
         chatRoomEntity2.setMessageCount(10);
 
         RoomUser roomUser1 = RoomUser.builder()
@@ -90,6 +101,8 @@ public class QueryDslTest {
                 .userNickname("jihee")
                 .chatRoom(chatRoomEntity2)
                 .build();
+
+        initMessages();
 
         em.persist(chatRoomEntity1);
         em.persist(chatRoomEntity2);
@@ -309,6 +322,109 @@ public class QueryDslTest {
         System.out.println(roomUuid);
 
 
+    }
+
+
+
+    @Test
+    public void getChatMessageListTest(){
+
+        PageRequest pageRequest = PageRequest.of(0,8, Sort.Direction.DESC,"id");
+        Slice<ChatMessage> slicePage = chatMessageRepository.findChatMessagesByRoomUuid(roomUuid1, pageRequest);
+
+        System.out.println("====================Entity List======================");
+        List<ChatMessage> chatMessageList = slicePage.getContent();
+        chatMessageList.forEach(chatMsg ->{System.out.println(chatMsg.toString());});
+
+        System.out.println("====================DTO List======================");
+        Slice<ChatDto> chatDtoSlice = slicePage.map( chatMessage -> chatMessage.convert());
+        List<ChatDto> content = chatDtoSlice.getContent();
+
+        content.forEach( chatDto -> {
+            System.out.println(chatDto.toString());
+        });
+
+
+    }
+
+    public void initMessages(){
+        chatMessageRepository.save(
+                ChatMessage.builder()
+                        .messageTime("2023-12-08 23:40:03")
+                        .message("ㄷㄷㄷㄷㅌㅌㅋ!!!! ㅎㅎㅎ")
+                        .senderNickname("mingu")
+                        .senderUuid("1123123123123")
+                        .type(ChatDto.MessageType.TALK)
+                        .chatRoom(chatRoomEntity1)
+                        .roomUuid(roomUuid1)
+                        .build()
+        );
+        chatMessageRepository.save(
+                ChatMessage.builder()
+                        .messageTime("2023-12-08 23:40:03")
+                        .message("반가ㅌㅌㅌㅌㅌ워!!!! ㅎㅎㅎ")
+                        .senderNickname("mingu")
+                        .senderUuid("1123123123123")
+                        .type(ChatDto.MessageType.TALK)
+                        .chatRoom(chatRoomEntity1)
+                        .roomUuid(roomUuid1)
+                        .build()
+        );
+        chatMessageRepository.save(
+                ChatMessage.builder()
+                        .messageTime("2023-12-08 23:40:03")
+                        .message("반가워ㄷㄷㄷㄷ!!!! ㅎㅎㅎ")
+                        .senderNickname("jihee")
+                        .senderUuid("1123123132323123")
+                        .type(ChatDto.MessageType.TALK)
+                        .chatRoom(chatRoomEntity1)
+                        .roomUuid(roomUuid1)
+                        .build()
+        );
+        chatMessageRepository.save(
+                ChatMessage.builder()
+                        .messageTime("2023-12-08 23:40:03")
+                        .message("ㅇㅇㅇㅇ!!!! ㅎㅎㅎ")
+                        .senderNickname("minsu")
+                        .senderUuid("11231232222123123")
+                        .type(ChatDto.MessageType.TALK)
+                        .chatRoom(chatRoomEntity1)
+                        .roomUuid(roomUuid1)
+                        .build()
+        );
+        chatMessageRepository.save(
+                ChatMessage.builder()
+                        .messageTime("2023-12-08 23:40:03")
+                        .message("ㅋㅋㅋㅋㅋ!!!! ㅎㅎㅎ")
+                        .senderNickname("minsu")
+                        .senderUuid("11231232222123123")
+                        .type(ChatDto.MessageType.TALK)
+                        .chatRoom(chatRoomEntity1)
+                        .roomUuid(roomUuid1)
+                        .build()
+        );
+        chatMessageRepository.save(
+                ChatMessage.builder()
+                        .messageTime("2023-12-08 23:40:03")
+                        .message("ㅎㅎㅎㅎㅎ!!!! ㅎㅎㅎ")
+                        .senderNickname("minsu")
+                        .senderUuid("11231232222123123")
+                        .type(ChatDto.MessageType.TALK)
+                        .chatRoom(chatRoomEntity1)
+                        .roomUuid(roomUuid1)
+                        .build()
+        );
+        chatMessageRepository.save(
+                ChatMessage.builder()
+                        .messageTime("2023-12-08 23:40:03")
+                        .message("안녕!!!! ㅎㅎㅎ")
+                        .senderNickname("minsu")
+                        .senderUuid("11231232222123123")
+                        .type(ChatDto.MessageType.TALK)
+                        .chatRoom(chatRoomEntity1)
+                        .roomUuid(roomUuid1)
+                        .build()
+        );
     }
 
 }

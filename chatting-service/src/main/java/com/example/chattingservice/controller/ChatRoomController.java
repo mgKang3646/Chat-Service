@@ -40,5 +40,10 @@ public class ChatRoomController {
         return chatRoomService.findOrCreateChatRoom(chatRoomRequest);
     }
 
+    @GetMapping("/api/chat/{roomUuid}")
+    public List<ChatDto> findAllChatList(@PathVariable String roomUuid){
+        return chatRoomService.findAllChatList(roomUuid);
+    }
+
 
 }
