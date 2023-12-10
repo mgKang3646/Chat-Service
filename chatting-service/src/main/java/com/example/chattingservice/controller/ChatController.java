@@ -37,9 +37,7 @@ public class ChatController {
     public void setSessionOptions(@Payload ChatDto chatDto, SimpMessageHeaderAccessor headerAccessor){
         headerAccessor.getSessionAttributes().put("userUUID", chatDto.getSenderUuid());
         headerAccessor.getSessionAttributes().put("roomUUID", chatDto.getRoomUuid());
-
         chatRoomService.updateEnterUserState(RoomUserState.IN,chatDto);
-
     }
 
     @MessageMapping("/chat/leave")

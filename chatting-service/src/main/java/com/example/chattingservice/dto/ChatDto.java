@@ -32,7 +32,7 @@ public class ChatDto implements Serializable {
     private String message;
 
     public void updateEnterMessage(){
-        setMessage(getSenderNickname() + "님이 입장하였습니다.");
+        setMessage(getSenderNickname().concat("님이 입장하였습니다."));
     }
 
     public static ChatDto getInstanceExit(String roomUUID, String userUUID, String username){
@@ -40,7 +40,7 @@ public class ChatDto implements Serializable {
                 .roomUuid(roomUUID)
                 .senderUuid(userUUID)
                 .senderNickname(username)
-                .message(username + "님이 퇴장하였습니다.")
+                .message(username.concat("님이 퇴장하였습니다."))
                 .type(MessageType.EXITED)
                 .build();
     }

@@ -31,11 +31,12 @@ public class ChatRoomController {
     private final KafkaConfigVo kafkaConfigVo;
 
     @PostMapping("/send")
-    public void publishMessageToTopic(@RequestBody @Valid ChatDto chatDto) throws ExecutionException, InterruptedException {
+    public void publishMessageToTopic(@RequestBody @Valid ChatDto chatDto)
+            throws ExecutionException, InterruptedException {
         if(chatDto.getType()==ChatDto.MessageType.TALK) chatRoomService.processSendMessage(chatDto);
         else if(chatDto.getType()==ChatDto.MessageType.ENTER) chatDto.updateEnterMessage();
 
-        kafkaTemplate.send(kafkaConfigVo.getTopicName(),chatDto).get(); // Exception 처리하기 (try-catch)
+        kafkaTemplate.send(kafkaConfigVo.getTopicName(),chatDto).get();
     }
 
     // 채팅리스트 화면 조회

@@ -13,9 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties({
-        KafkaConfigProperties.class,
-        StompConfigProperties.class,
-        PageConfigProperties.class
+        KafkaConfigProperties.class, StompConfigProperties.class, PageConfigProperties.class
 })
 @RequiredArgsConstructor
 public class PropertiesConfig {

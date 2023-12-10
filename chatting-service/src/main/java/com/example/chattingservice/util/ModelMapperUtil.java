@@ -9,7 +9,6 @@ import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.dto.RoomUserCreateDto;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
-import com.example.chattingservice.vo.RoomUserState;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
