@@ -1,3 +1,4 @@
+
 server:
   port: 0
 
@@ -7,10 +8,10 @@ spring:
   messages:
     basename: errors
   datasource:
-    url: jdbc:mysql://localhost:3306/chat-database
-    username: chat-user
-    password: chat-user
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:chattingdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   h2:
     console:
       enabled: true
@@ -19,12 +20,13 @@ spring:
       path: /h2-console
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
       use_sql_comments: true  #주석으로 QueryDSL이 변환된 JPQL 확인하는 설정
       format_sql: true
     defer-datasource-initialization: true
     show-sql: true
     generate-ddl: true
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance.id:${random.value}}
@@ -33,20 +35,3 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
-
-data:
-  kafka:
-    topicName: kafka-chat
-    bootstrapServerUrl: localhost:9092
-  stomp:
-    endpoint: /ws-stomp
-    sub: /sub
-    pub: /pub
-  page:
-    offset: 0
-    size: 4
-    orderBy: messageTime
-
-
-
-

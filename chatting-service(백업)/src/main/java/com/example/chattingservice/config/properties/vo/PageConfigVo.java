@@ -7,9 +7,10 @@ import lombok.Setter;
 
 @Getter @Setter
 @RequiredArgsConstructor
-public class StompConfigVo {
+public class PageConfigVo {
 
-    private final String endpoint;
-    private final String sub;
-    private final String pub;
+    private final int offset;
+    private final int size;
+    private final String orderBy;
+
 }

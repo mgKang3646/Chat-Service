@@ -31,9 +31,9 @@ function Chat(){
         
     }
 
-    useEffect(()=>{
-         connect();
-     },[]); 
+    // useEffect(()=>{
+    //      connect();
+    //  },[]); 
 
 
     const handleInputChange= (event) =>{
@@ -201,6 +201,7 @@ function Chat(){
 
     return (
         <div className="chat">
+
             <div className="chat-window">
                 <div className='chat-header'>
                     <button className='round-button' onClick={leaveChatRoom}> 벗어나기 </button>
@@ -215,6 +216,7 @@ function Chat(){
                     ))}
                 </div>
                 <div className="input-area">
+                    <button onClick={connect}> 연결하기 </button>
                     <input
                         type="text"
                         value={input}

@@ -3,19 +3,19 @@ package com.example.chattingservice.config.properties;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import javax.validation.constraints.NotEmpty;
 
-@Slf4j
 @Getter @Setter
-@ConfigurationProperties("data.kafka")
-public class KafkaConfigProperties {
+@ConfigurationProperties("data.stomp")
+public class StompConfigProperties {
 
     @NotEmpty
-    private String topicName;
+    private String endpoint;
     @NotEmpty
-    private String bootstrapServerUrl;
-
+    private String sub;
+    @NotEmpty
+    private String pub;
 
 }
