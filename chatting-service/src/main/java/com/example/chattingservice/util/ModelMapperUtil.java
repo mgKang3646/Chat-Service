@@ -4,7 +4,7 @@ package com.example.chattingservice.util;
 import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.dto.ChatRoomDto;
 import com.example.chattingservice.entity.ChatMessage;
-import com.example.chattingservice.vo.ChatRoomRequest;
+import com.example.chattingservice.vo.ChatRoomCreateRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.dto.RoomUserDto;
 import com.example.chattingservice.entity.ChatRoom;
@@ -22,21 +22,21 @@ public class ModelMapperUtil {
 
     private final ModelMapper mapper;
 
-    public List<RoomUserDto> convertToRoomUserDto(ChatRoomRequest chatRoomRequest){
+    public List<RoomUserDto> convertToRoomUserDto(ChatRoomCreateRequest chatRoomCreateRequest){
         List<RoomUserDto> roomUserDtoList = new ArrayList<>();
-        roomUserDtoList.add(RoomUserDto.getSenderInstance(chatRoomRequest));
-        roomUserDtoList.add(RoomUserDto.getReceiverInstance(chatRoomRequest));
+        roomUserDtoList.add(RoomUserDto.getSenderInstance(chatRoomCreateRequest));
+        roomUserDtoList.add(RoomUserDto.getReceiverInstance(chatRoomCreateRequest));
 
         return roomUserDtoList;
     }
 
-    public ChatRoom convertToChatRoom(ChatRoomRequest request){
+    public ChatRoom convertToChatRoom(ChatRoomCreateRequest request){
         return convertChatRoomDtoToChatRoom(ChatRoomDto.getInstance());
     }
 
-    public List<RoomUser> convertToRoomUser(ChatRoomRequest chatRoomRequest){
+    public List<RoomUser> convertToRoomUser(ChatRoomCreateRequest chatRoomCreateRequest){
 
-        return convertRoomUserDtoListToRoomUserList(convertToRoomUserDto(chatRoomRequest));
+        return convertRoomUserDtoListToRoomUserList(convertToRoomUserDto(chatRoomCreateRequest));
     }
     public ChatRoomResponse convertToChatRoomResponse(ChatRoom chatRoom){
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);

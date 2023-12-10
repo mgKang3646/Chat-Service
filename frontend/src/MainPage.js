@@ -36,15 +36,15 @@ function MainPage(){
         event.preventDefault();
 
         const createChatRoomForm = new FormData();
-        createChatRoomForm.append("targetUuid", user.userId);
-        createChatRoomForm.append("fromUuid",localStorage.getItem('userId'));
-        createChatRoomForm.append("targetNickname", user.username);
-        createChatRoomForm.append("fromNickname", localStorage.getItem('username'));
+        createChatRoomForm.append("targetUuid", user.userId); // Get 파라미터
+        createChatRoomForm.append("fromUuid",localStorage.getItem('userId')); // 헤더
+        createChatRoomForm.append("targetNickname", user.username); // 서비스간 통신
+        createChatRoomForm.append("fromNickname", localStorage.getItem('username')); // 서비스 간 통신
 
         try{
             const response = await axios({
                 method: "post",
-                url: "chatting-service/createroom",
+                url: "chatting-service/api/chat/createroom",
                 data: createChatRoomForm,
                 headers: { "Content-Type" : "application/json" }
             });

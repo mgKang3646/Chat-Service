@@ -43,11 +43,14 @@ function Chat(){
     // 요청을 3번 보낸다 ( 1. 구독, 2. 세션셜정 3.입장 메시지 ) => 요청 횟수를 줄일 수 있는 방법은 없을까?
     function onConnected() { 
         stompClient.current.subscribe('/sub/chat/room/' + roomId, onMessageReceived,{'id':roomId}); // 구독 요청하기
+        const currentTime = getKoreanTimeISO();
+        console.log("현재 시간 : " + currentTime)
 
         let sendMsgForm = {
             roomUuid: roomId,
             senderNickname: localStorage.getItem('username'),
             senderUuid: localStorage.getItem('userId'),
+            messageTime: currentTime,
             type: 'ENTER'
         };
 

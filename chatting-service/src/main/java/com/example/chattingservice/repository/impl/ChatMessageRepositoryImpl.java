@@ -1,6 +1,7 @@
-package com.example.chattingservice.repository;
+package com.example.chattingservice.repository.impl;
 
 import com.example.chattingservice.entity.ChatMessage;
+import com.example.chattingservice.repository.ChatMessageRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -13,7 +14,7 @@ import java.util.List;
 import static com.example.chattingservice.entity.QChatMessage.chatMessage;
 
 @Slf4j
-public class ChatMessageRepositoryImpl implements ChatMessageRepositoryCustom{
+public class ChatMessageRepositoryImpl implements ChatMessageRepositoryCustom {
 
 
     private JPAQueryFactory queryFactory;

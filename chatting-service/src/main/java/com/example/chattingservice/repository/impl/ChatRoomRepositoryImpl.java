@@ -1,7 +1,8 @@
-package com.example.chattingservice.repository;
+package com.example.chattingservice.repository.impl;
 
 import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.repository.ChatRoomRepositoryCustom;
 import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.entity.ChatRoom;
 import com.querydsl.jpa.JPAExpressions;

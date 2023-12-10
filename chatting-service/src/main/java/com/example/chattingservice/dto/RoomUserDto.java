@@ -1,7 +1,7 @@
 package com.example.chattingservice.dto;
 
 
-import com.example.chattingservice.vo.ChatRoomRequest;
+import com.example.chattingservice.vo.ChatRoomCreateRequest;
 import lombok.*;
 
 
@@ -16,17 +16,17 @@ public class RoomUserDto {
     private String userNickname;
     private int readMessageCount;
 
-    public static RoomUserDto getSenderInstance(ChatRoomRequest chatRoomRequest){
+    public static RoomUserDto getSenderInstance(ChatRoomCreateRequest chatRoomCreateRequest){
         return RoomUserDto.builder()
-                .userUuid(chatRoomRequest.getFromUuid())
-                .userNickname(chatRoomRequest.getFromNickname())
+                .userUuid(chatRoomCreateRequest.getFromUuid())
+                .userNickname(chatRoomCreateRequest.getFromNickname())
                 .build();
     }
 
-    public static RoomUserDto getReceiverInstance(ChatRoomRequest chatRoomRequest){
+    public static RoomUserDto getReceiverInstance(ChatRoomCreateRequest chatRoomCreateRequest){
         return RoomUserDto.builder()
-                .userUuid(chatRoomRequest.getTargetUuid())
-                .userNickname(chatRoomRequest.getTargetNickname())
+                .userUuid(chatRoomCreateRequest.getTargetUuid())
+                .userNickname(chatRoomCreateRequest.getTargetNickname())
                 .build();
     }
 

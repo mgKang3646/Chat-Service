@@ -20,12 +20,14 @@ function ChatListPage(){
 
         else{
             try{
-                const userId = localStorage.getItem('userId'); 
+                const userUuid = localStorage.getItem('userId'); 
+
+                console.log("현재 UUID : " + userUuid)
                 const url = '/chatting-service/api/chat/rooms'
                 const response = await axios.get(url,{
                     headers: {
                         Authorization: jwt,
-                        userUuid: userId
+                        userUuid: userUuid
                     }
                 });
 
@@ -40,6 +42,18 @@ function ChatListPage(){
 
     }
 
+    function goChatPage(event,chat) {
+
+        navigate('/chatPage',{
+            state: {
+                roomId: chat.roomUuid,
+                ownerName: chat.targetNickname
+            }
+        });
+
+        event.preventDefault();
+    }
+
     useEffect(()=>{
         getChatList();
     },[]);
@@ -48,7 +62,7 @@ function ChatListPage(){
     return (
     <div class="chat-list">
         {chatList.map((chat, index) => (
-            <div class="chat-room" key={index} onClick={""}>
+            <div class="chat-room" key={index} onClick={(event)=>goChatPage(event,chat)}>
                 <div class="chat-info">
                     <div class="receiver-name">{chat.targetNickname}</div>
                     <div class="recent-message">{chat.recentMessage}</div>

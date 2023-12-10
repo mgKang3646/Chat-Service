@@ -1,4 +1,4 @@
-package com.example.chattingservice.service;
+package com.example.chattingservice.service.impl;
 
 
 import com.example.chattingservice.dto.ChatDto;
@@ -9,8 +9,9 @@ import com.example.chattingservice.entity.RoomUser;
 import com.example.chattingservice.repository.ChatMessageRepository;
 import com.example.chattingservice.repository.ChatRoomRepository;
 import com.example.chattingservice.repository.RoomUserRepository;
+import com.example.chattingservice.service.ChatRoomService;
 import com.example.chattingservice.util.ModelMapperUtil;
-import com.example.chattingservice.vo.ChatRoomRequest;
+import com.example.chattingservice.vo.ChatRoomCreateRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.vo.RoomUserState;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Override
-    public ChatRoomResponse createChatRoom(ChatRoomRequest chatRoomRequest) {
-        ChatRoom chatRoom = modelMapperUtil.convertToChatRoom(chatRoomRequest);
-        List<RoomUser> roomUserList = modelMapperUtil.convertToRoomUser(chatRoomRequest);
+    public ChatRoomResponse createChatRoom(ChatRoomCreateRequest chatRoomCreateRequest) {
+        ChatRoom chatRoom = modelMapperUtil.convertToChatRoom(chatRoomCreateRequest);
+        List<RoomUser> roomUserList = modelMapperUtil.convertToRoomUser(chatRoomCreateRequest);
 
         // 영속화 => QueryDSL Insert문으로 변경하여 코드 줄이기
         chatRoomRepository.save(chatRoom);
@@ -66,9 +67,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public ChatRoomResponse findOrCreateChatRoom(ChatRoomRequest chatRoomRequest) {
-        String roomUuid = findChatRoomUuID(chatRoomRequest);
-        return (roomUuid.equals("0")) ? createChatRoom(chatRoomRequest) : ChatRoomResponse.getInstance(roomUuid);
+    public ChatRoomResponse findOrCreateChatRoom(ChatRoomCreateRequest chatRoomCreateRequest) {
+        String roomUuid = findChatRoomUuID(chatRoomCreateRequest);
+        return (roomUuid.equals("0")) ? createChatRoom(chatRoomCreateRequest) : ChatRoomResponse.getInstance(roomUuid);
     }
 
     @Override
@@ -101,8 +102,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatSliceMessages.map(chatMessage -> chatMessage.convert());
     }
 
-    private String findChatRoomUuID(ChatRoomRequest chatRoomRequest) {
-        List<RoomUserDto> roomUserDtoList = modelMapperUtil.convertToRoomUserDto(chatRoomRequest);
+    private String findChatRoomUuID(ChatRoomCreateRequest chatRoomCreateRequest) {
+        List<RoomUserDto> roomUserDtoList = modelMapperUtil.convertToRoomUserDto(chatRoomCreateRequest);
         return chatRoomRepository.findChatRoomByUserId(roomUserDtoList).getRoomUuid();
     }
 

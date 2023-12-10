@@ -3,6 +3,8 @@ package com.example.chattingservice.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -18,13 +20,16 @@ public class ChatDto implements Serializable {
         ENTER, TALK, LEAVE, EXITED;
 
     }
-
-    private MessageType type;
-    private String roomUuid;
-    private String senderUuid;
-    private String senderNickname;
+    @NotNull(message = "{required.request}")
+    private MessageType type; // 필수값
+    @NotBlank(message = "{required.request}")
+    private String roomUuid; // 필수값
+    @NotBlank(message = "{required.request}")
+    private String senderUuid; //필수값
+    @NotNull(message = "{required.request}")
+    private LocalDateTime messageTime; //필수값 + 바인딩 에러
+    private String senderNickname; // 서비스 간 통신
     private String message;
-    private LocalDateTime messageTime;
 
     public void updateEnterMessage(){
         setMessage(getSenderNickname() + "님이 입장하였습니다.");
