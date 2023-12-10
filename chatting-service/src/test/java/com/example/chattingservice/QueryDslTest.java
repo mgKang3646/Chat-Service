@@ -30,6 +30,7 @@ import java.util.UUID;
 import static com.example.chattingservice.entity.QChatMessage.chatMessage;
 import static com.example.chattingservice.entity.QChatRoom.chatRoom;
 import static com.example.chattingservice.entity.QRoomUser.roomUser;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -347,6 +348,25 @@ public class QueryDslTest {
         System.out.println("====================Entity List======================");
         chatMessageList.forEach(chatMsg ->{System.out.println(chatMsg.getMessageTime());});
 
+    }
+
+    @Test
+    public void getChatListTest(){
+
+
+        List<ChatRoom> chatRoomList = queryFactory.selectFrom(chatRoom)
+                .distinct()
+                .leftJoin(chatRoom.roomUsers, roomUser)
+                .fetchJoin()
+                .where(chatRoom.roomId.in(JPAExpressions.select(roomUser.chatRoom.roomId)
+                        .from(roomUser)
+                        .where(
+                                roomUser.userState.ne(RoomUserState.EXITED),
+                                roomUser.userUuid.eq(userId1)
+                        )))
+                .fetch();
+
+        assertThat(chatRoomList.size()).isEqualTo(2);
     }
 
 

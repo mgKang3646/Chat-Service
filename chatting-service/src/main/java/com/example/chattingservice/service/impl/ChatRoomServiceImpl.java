@@ -2,7 +2,7 @@ package com.example.chattingservice.service.impl;
 
 
 import com.example.chattingservice.dto.ChatDto;
-import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.dto.RoomUserFindDto;
 import com.example.chattingservice.entity.ChatMessage;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
@@ -68,7 +68,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public ChatRoomResponse findOrCreateChatRoom(ChatRoomCreateRequest chatRoomCreateRequest) {
-        String roomUuid = findChatRoomUuID(chatRoomCreateRequest);
+        String roomUuid = findChatRoomUuID(RoomUserFindDto.convert(chatRoomCreateRequest));
         return (roomUuid.equals("0")) ? createChatRoom(chatRoomCreateRequest) : ChatRoomResponse.getInstance(roomUuid);
     }
 
@@ -97,14 +97,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public Slice<ChatDto> findAllChatList(String roomUuid, LocalDateTime beforeTime) {
-        PageRequest pageRequest = PageRequest.of(0,4, Sort.Direction.DESC,"messageTime"); // 정렬 속성 날짜로 변경하기
+        PageRequest pageRequest = PageRequest.of(0,4, Sort.Direction.DESC,"messageTime");
         Slice<ChatMessage> chatSliceMessages = chatMessageRepository.findChatMessageListByRoomUuid(roomUuid, pageRequest, beforeTime);
         return chatSliceMessages.map(chatMessage -> chatMessage.convert());
     }
 
-    private String findChatRoomUuID(ChatRoomCreateRequest chatRoomCreateRequest) {
-        List<RoomUserDto> roomUserDtoList = modelMapperUtil.convertToRoomUserDto(chatRoomCreateRequest);
-        return chatRoomRepository.findChatRoomByUserId(roomUserDtoList).getRoomUuid();
+    private String findChatRoomUuID(RoomUserFindDto roomUserFindDto) {
+        return chatRoomRepository.findChatRoomByUserId(roomUserFindDto).getRoomUuid();
     }
 
 

@@ -1,7 +1,8 @@
 package com.example.chattingservice.repository.impl;
 
 import com.example.chattingservice.dto.ChatDto;
-import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.dto.RoomUserCreateDto;
+import com.example.chattingservice.dto.RoomUserFindDto;
 import com.example.chattingservice.repository.ChatRoomRepositoryCustom;
 import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.entity.ChatRoom;
@@ -114,24 +115,21 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
     }
 
     @Override
-    public ChatRoom findChatRoomByUserId(List<RoomUserDto> roomUserDtoList) {
-
-        String userId1 = roomUserDtoList.get(0).getUserUuid();
-        String userId2 = roomUserDtoList.get(1).getUserUuid();
+    public ChatRoom findChatRoomByUserId(RoomUserFindDto roomUserFindDto) {
 
         ChatRoom findChatRoom = queryFactory
                 .select(roomUser.chatRoom)
                 .from(roomUser)
                 .leftJoin(roomUser.chatRoom, chatRoom)
                 .where(
-                        roomUser.userUuid.eq(userId1),
+                        roomUser.userUuid.eq(roomUserFindDto.getFromUuid()),
                         roomUser.chatRoom.roomUuid.in(
                                 JPAExpressions
                                         .select(roomUser.chatRoom.roomUuid)
                                         .from(roomUser)
                                         .leftJoin(roomUser.chatRoom, chatRoom)
                                         .where(
-                                                roomUser.userUuid.eq(userId2)
+                                                roomUser.userUuid.eq(roomUserFindDto.getTargetUuid())
                                         )
                         )
                 ).fetchOne();

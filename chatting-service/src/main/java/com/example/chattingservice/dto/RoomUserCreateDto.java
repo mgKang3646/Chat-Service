@@ -2,6 +2,7 @@ package com.example.chattingservice.dto;
 
 
 import com.example.chattingservice.vo.ChatRoomCreateRequest;
+import com.example.chattingservice.vo.RoomUserState;
 import lombok.*;
 
 
@@ -10,25 +11,30 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor( access = AccessLevel.PROTECTED )
-public class RoomUserDto {
+public class RoomUserCreateDto {
 
     private String userUuid ;
     private String userNickname;
     private int readMessageCount;
+    private RoomUserState userState;
 
-    public static RoomUserDto getSenderInstance(ChatRoomCreateRequest chatRoomCreateRequest){
-        return RoomUserDto.builder()
+    public static RoomUserCreateDto getSenderInstance(ChatRoomCreateRequest chatRoomCreateRequest){
+        return RoomUserCreateDto.builder()
                 .userUuid(chatRoomCreateRequest.getFromUuid())
                 .userNickname(chatRoomCreateRequest.getFromNickname())
+                .userState(RoomUserState.CREATE)
                 .build();
     }
 
-    public static RoomUserDto getReceiverInstance(ChatRoomCreateRequest chatRoomCreateRequest){
-        return RoomUserDto.builder()
+
+    public static RoomUserCreateDto getReceiverInstance(ChatRoomCreateRequest chatRoomCreateRequest){
+        return RoomUserCreateDto.builder()
                 .userUuid(chatRoomCreateRequest.getTargetUuid())
                 .userNickname(chatRoomCreateRequest.getTargetNickname())
+                .userState(RoomUserState.CREATE)
                 .build();
     }
+
 
 
 }

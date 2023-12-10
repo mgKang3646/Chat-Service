@@ -1,7 +1,8 @@
 package com.example.chattingservice.repository;
 
 import com.example.chattingservice.dto.ChatDto;
-import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.dto.RoomUserCreateDto;
+import com.example.chattingservice.dto.RoomUserFindDto;
 import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.entity.ChatRoom;
 
@@ -17,7 +18,7 @@ public interface ChatRoomRepositoryCustom {
 
     long updateReadMessageCount(ChatDto chatDto);
 
-    ChatRoom findChatRoomByUserId(List<RoomUserDto> roomUserDtoList);
+    ChatRoom findChatRoomByUserId(RoomUserFindDto roomUserFindDto);
 
     List<ChatRoom> findAllChatRoomByUserId(String userUuid); //수정
 

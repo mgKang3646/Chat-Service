@@ -6,9 +6,10 @@ import com.example.chattingservice.dto.ChatRoomDto;
 import com.example.chattingservice.entity.ChatMessage;
 import com.example.chattingservice.vo.ChatRoomCreateRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
-import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.dto.RoomUserCreateDto;
 import com.example.chattingservice.entity.ChatRoom;
 import com.example.chattingservice.entity.RoomUser;
+import com.example.chattingservice.vo.RoomUserState;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,12 +23,12 @@ public class ModelMapperUtil {
 
     private final ModelMapper mapper;
 
-    public List<RoomUserDto> convertToRoomUserDto(ChatRoomCreateRequest chatRoomCreateRequest){
-        List<RoomUserDto> roomUserDtoList = new ArrayList<>();
-        roomUserDtoList.add(RoomUserDto.getSenderInstance(chatRoomCreateRequest));
-        roomUserDtoList.add(RoomUserDto.getReceiverInstance(chatRoomCreateRequest));
+    public List<RoomUserCreateDto> convertToRoomUserDto(ChatRoomCreateRequest chatRoomCreateRequest){
+        List<RoomUserCreateDto> roomUserCreateDtoList = new ArrayList<>();
+        roomUserCreateDtoList.add(RoomUserCreateDto.getSenderInstance(chatRoomCreateRequest));
+        roomUserCreateDtoList.add(RoomUserCreateDto.getReceiverInstance(chatRoomCreateRequest));
 
-        return roomUserDtoList;
+        return roomUserCreateDtoList;
     }
 
     public ChatRoom convertToChatRoom(ChatRoomCreateRequest request){
@@ -35,7 +36,6 @@ public class ModelMapperUtil {
     }
 
     public List<RoomUser> convertToRoomUser(ChatRoomCreateRequest chatRoomCreateRequest){
-
         return convertRoomUserDtoListToRoomUserList(convertToRoomUserDto(chatRoomCreateRequest));
     }
     public ChatRoomResponse convertToChatRoomResponse(ChatRoom chatRoom){
@@ -60,10 +60,10 @@ public class ModelMapperUtil {
         return chatRoom;
     }
 
-    private List<RoomUser> convertRoomUserDtoListToRoomUserList(List<RoomUserDto> roomUserDtoList ){
+    private List<RoomUser> convertRoomUserDtoListToRoomUserList(List<RoomUserCreateDto> roomUserCreateDtoList){
 
         List<RoomUser> roomUsers = new ArrayList<>();
-        roomUserDtoList.forEach(roomUserDto -> {
+        roomUserCreateDtoList.forEach(roomUserDto -> {
             RoomUser roomUser = mapper.map(roomUserDto, RoomUser.class);
             roomUsers.add(roomUser);
         });

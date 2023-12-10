@@ -30,8 +30,8 @@ public class RoomUser extends BaseTimeEntity{
     @Column ( name = "user_image_url")
     private String userImageUrl;
 
-    @Column ( name = "user_state")
     @Enumerated(EnumType.STRING)
+    @Column ( name = "user_state" )
     private RoomUserState userState;
 
     @ManyToOne(fetch = FetchType.LAZY)

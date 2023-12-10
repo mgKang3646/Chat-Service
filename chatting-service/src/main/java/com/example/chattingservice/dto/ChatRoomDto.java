@@ -19,7 +19,7 @@ public class ChatRoomDto {
     private String recentMessage;
     private LocalDateTime recentDate;
     private int messageCount;
-    private List<RoomUserDto> roomUsers;
+    private List<RoomUserCreateDto> roomUsers;
 
     public static ChatRoomDto getInstance(){
         return ChatRoomDto.builder()

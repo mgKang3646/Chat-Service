@@ -2,7 +2,7 @@ package com.example.chattingservice.vo;
 
 
 import com.example.chattingservice.dto.ChatRoomDto;
-import com.example.chattingservice.dto.RoomUserDto;
+import com.example.chattingservice.dto.RoomUserCreateDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public class ChatRoomResponse {
 
     public static ChatRoomResponse convert(ChatRoomDto chatRoomDto, String sender){
         ChatRoomResponse chatRoomResponse = new ChatRoomResponse();
-        for (RoomUserDto roomUser : chatRoomDto.getRoomUsers()) {
+        for (RoomUserCreateDto roomUser : chatRoomDto.getRoomUsers()) {
             if(!roomUser.getUserUuid().equals(sender)) {
                 chatRoomResponse.setRoomUuid(chatRoomDto.getRoomUuid()); // RoomId
                 chatRoomResponse.setTargetNickname(roomUser.getUserNickname()); // 대화상대 닉네임
