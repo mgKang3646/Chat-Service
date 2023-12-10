@@ -1,5 +1,6 @@
 package com.example.chattingservice.config;
 
+import com.example.chattingservice.config.properties.vo.StompConfigVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -13,11 +14,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class MessageBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
-
+    private final StompConfigVo stompConfigVo;
     // /ws-stomp 엔드포인트에서 SocketJS 연결
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-stomp")
+        registry.addEndpoint(stompConfigVo.getEndpoint())
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
@@ -25,9 +26,9 @@ public class MessageBrokerConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 메시지 구독 요청 URL
-        registry.enableSimpleBroker("/sub");
+        registry.enableSimpleBroker(stompConfigVo.getSub());
         // 메시지 발행 요청 URL
-        registry.setApplicationDestinationPrefixes("/pub");
+        registry.setApplicationDestinationPrefixes(stompConfigVo.getPub());
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.chattingservice.service.impl;
 
 
+import com.example.chattingservice.config.properties.vo.PageConfigVo;
 import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.dto.RoomUserFindDto;
 import com.example.chattingservice.entity.ChatMessage;
@@ -32,6 +33,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final RoomUserRepository roomUserRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final PageConfigVo pageConfigVo;
 
     @Override
     public ChatRoomResponse createChatRoom(ChatRoomCreateRequest chatRoomCreateRequest) {
@@ -97,8 +99,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public Slice<ChatDto> findAllChatList(String roomUuid, LocalDateTime beforeTime) {
-        PageRequest pageRequest = PageRequest.of(0,4, Sort.Direction.DESC,"messageTime");
-        Slice<ChatMessage> chatSliceMessages = chatMessageRepository.findChatMessageListByRoomUuid(roomUuid, pageRequest, beforeTime);
+        PageRequest pageRequest = PageRequest.of(pageConfigVo.getOffset(),pageConfigVo.getSize(),
+                Sort.Direction.DESC,pageConfigVo.getOrderBy());
+        Slice<ChatMessage> chatSliceMessages =
+                chatMessageRepository.findChatMessageListByRoomUuid(roomUuid, pageRequest, beforeTime);
         return chatSliceMessages.map(chatMessage -> chatMessage.convert());
     }
 

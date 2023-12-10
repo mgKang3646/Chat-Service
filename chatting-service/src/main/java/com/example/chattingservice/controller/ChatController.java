@@ -1,6 +1,7 @@
 package com.example.chattingservice.controller;
 
 import com.example.chattingservice.config.KafkaConfig;
+import com.example.chattingservice.config.properties.vo.KafkaConfigVo;
 import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.vo.RoomUserState;
 import com.example.chattingservice.service.ChatRoomService;
@@ -25,8 +26,8 @@ public class ChatController {
     private final ChatRoomService chatRoomService;
 
     @KafkaListener(
-            topics = KafkaConfig.TOPIC_NAME,
-            groupId = KafkaConfig.GROUP_ID
+            topics = "#{'${data.kafka.topicName}'}",
+            groupId = "#{'${data.kafka.groupId}'}"
     )
     public void listen(ChatDto chatDto){
         template.convertAndSend("/sub/chat/room/" + chatDto.getRoomUuid(), chatDto);

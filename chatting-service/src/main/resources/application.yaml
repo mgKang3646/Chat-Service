@@ -1,4 +1,3 @@
-
 server:
   port: 0
 
@@ -26,7 +25,6 @@ spring:
     defer-datasource-initialization: true
     show-sql: true
     generate-ddl: true
-
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance.id:${random.value}}
@@ -36,8 +34,20 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: beans
+data:
+  kafka:
+    topicName: kafka-chat
+    groupId: DevLink-Chat
+    bootstrapServerUrl: localhost:9092
+  stomp:
+    endpoint: /ws-stomp
+    sub: /sub
+    pub: /pub
+  page:
+    offset: 0
+    size: 4
+    orderBy: messageTime
+
+
+
+

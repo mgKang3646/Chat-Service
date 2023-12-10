@@ -1,11 +1,14 @@
 package com.example.chattingservice.config;
 
+import com.example.chattingservice.config.properties.vo.KafkaConfigVo;
 import com.example.chattingservice.dto.ChatDto;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -19,11 +22,10 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
+@RequiredArgsConstructor
 public class KafkaConfig {
 
-    public static final String TOPIC_NAME = "kafka-chat";
-    public static final String GROUP_ID = "DevLink-Chat";
-    public static final String BOOTSTRAP_SERVER_URL = "localhost:9092";
+    private final KafkaConfigVo kafkaConfigVo;
 
     // Producer Config
     @Bean
@@ -38,10 +40,10 @@ public class KafkaConfig {
     @Bean
     public Map<String,Object> producerConfigs() {
         Map<String,Object> configurations = new HashMap<>();
-        configurations.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,KafkaConfig.BOOTSTRAP_SERVER_URL);
+        configurations.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,kafkaConfigVo.getBootstrapServerUrl());
         configurations.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configurations.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,KafkaConfig.GROUP_ID);
+        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,kafkaConfigVo.getGroupId());
         return configurations;
     }
 
@@ -61,10 +63,10 @@ public class KafkaConfig {
     @Bean
     public Map<String,Object> consumerConfigs(){
         Map<String,Object> configurations = new HashMap<>();
-        configurations.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,KafkaConfig.BOOTSTRAP_SERVER_URL);
+        configurations.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,kafkaConfigVo.getBootstrapServerUrl());
         configurations.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configurations.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,KafkaConfig.GROUP_ID);
+        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,kafkaConfigVo.getGroupId());
         configurations.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");// ??
         return configurations;
 

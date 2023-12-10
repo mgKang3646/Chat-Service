@@ -1,5 +1,6 @@
 package com.example.chattingservice.controller;
 import com.example.chattingservice.config.KafkaConfig;
+import com.example.chattingservice.config.properties.vo.KafkaConfigVo;
 import com.example.chattingservice.dto.ChatDto;
 import com.example.chattingservice.vo.ChatRoomCreateRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
@@ -27,13 +28,14 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final KafkaTemplate<String, ChatDto> kafkaTemplate;
+    private final KafkaConfigVo kafkaConfigVo;
 
     @PostMapping("/send")
     public void publishMessageToTopic(@RequestBody @Valid ChatDto chatDto) throws ExecutionException, InterruptedException {
         if(chatDto.getType()==ChatDto.MessageType.TALK) chatRoomService.processSendMessage(chatDto);
         else if(chatDto.getType()==ChatDto.MessageType.ENTER) chatDto.updateEnterMessage();
 
-        kafkaTemplate.send(KafkaConfig.TOPIC_NAME,chatDto).get(); // Exception 처리하기 (try-catch)
+        kafkaTemplate.send(kafkaConfigVo.getTopicName(),chatDto).get(); // Exception 처리하기 (try-catch)
     }
 
     // 채팅리스트 화면 조회
