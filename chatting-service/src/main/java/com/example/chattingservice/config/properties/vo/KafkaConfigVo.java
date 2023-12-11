@@ -16,6 +16,7 @@ public class KafkaConfigVo {
 
     private final String topicName;
     private final String bootstrapServerUrl;
+    public static final String GROUP_ID = "#{ T(java.util.UUID).randomUUID().toString() }";
 
 
 

@@ -27,8 +27,7 @@ public class ChatController {
 
     @KafkaListener(
             topics = "#{'${data.kafka.topicName}'}",
-            //groupId = "#{'${data.kafka.groupId}'}"
-            groupId = KafkaConfig.GROUP_ID
+            groupId = KafkaConfigVo.GROUP_ID
     )
     public void listen(ChatDto chatDto){
         template.convertAndSend("/sub/chat/room/" + chatDto.getRoomUuid(), chatDto);

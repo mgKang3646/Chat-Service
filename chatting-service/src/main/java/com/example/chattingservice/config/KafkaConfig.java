@@ -27,7 +27,6 @@ import java.util.UUID;
 public class KafkaConfig {
 
     private final KafkaConfigVo kafkaConfigVo;
-    public static final String GROUP_ID = "#{ T(java.util.UUID).randomUUID().toString() }";
 
     // Producer Config
     @Bean
@@ -41,12 +40,11 @@ public class KafkaConfig {
     }
     @Bean
     public Map<String,Object> producerConfigs() {
-        System.out.println("============== Groupid : " + KafkaConfig.GROUP_ID );
         Map<String,Object> configurations = new HashMap<>();
         configurations.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,kafkaConfigVo.getBootstrapServerUrl());
         configurations.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configurations.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,KafkaConfig.GROUP_ID);
+        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,KafkaConfigVo.GROUP_ID);
         return configurations;
     }
 
@@ -69,7 +67,7 @@ public class KafkaConfig {
         configurations.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,kafkaConfigVo.getBootstrapServerUrl());
         configurations.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configurations.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,KafkaConfig.GROUP_ID);
+        configurations.put(CommonClientConfigs.GROUP_ID_CONFIG,KafkaConfigVo.GROUP_ID);
         configurations.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");// ??
         return configurations;
 
