@@ -11,10 +11,16 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @Builder
+@SequenceGenerator(
+        name= "USER_SEQ_GENERATOR",
+        sequenceName = "CHAT_USER_SEQ",
+        initialValue = 1, allocationSize = 1
+)
 public class RoomUser extends BaseTimeEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "USER_SEQ_GENERATOR")
     @Column(name = "room_user_id")
     private Long roomUserId;
     @Column( name = "user_uuid", nullable = false )
