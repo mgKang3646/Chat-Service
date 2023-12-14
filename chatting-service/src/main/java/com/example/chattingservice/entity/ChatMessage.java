@@ -27,8 +27,6 @@ public class ChatMessage extends BaseTimeEntity{
     private LocalDateTime messageTime;
     @Column(name="sender_uuid")
     private String senderUuid;
-    @Column(name="sender_nickname")
-    private String senderNickname; // 임시로 생성
     @Column(name="room_uuid")
     private String roomUuid;
     @Column(name="type")
@@ -48,7 +46,6 @@ public class ChatMessage extends BaseTimeEntity{
                 .message(message)
                 .messageTime(messageTime)
                 .senderUuid(senderUuid)
-                .senderNickname(senderNickname)
                 .roomUuid(roomUuid)
                 .type(type)
                 .build();

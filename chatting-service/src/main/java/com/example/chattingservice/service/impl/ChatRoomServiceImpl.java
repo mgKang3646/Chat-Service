@@ -35,19 +35,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
     private final PageConfigVo pageConfigVo;
 
+
     @Override
-    public ChatRoomResponse createChatRoom(ChatRoomCreateRequest chatRoomCreateRequest) {
-        ChatRoom chatRoom = modelMapperUtil.convertToChatRoom(chatRoomCreateRequest);
-        List<RoomUser> roomUserList = modelMapperUtil.convertToRoomUser(chatRoomCreateRequest);
-
-        // 영속화 => QueryDSL Insert문으로 변경하여 코드 줄이기
-        chatRoomRepository.save(chatRoom);
-        roomUserList.forEach(roomUser -> {
-            roomUser.updateChatRoom(chatRoom);
-            roomUserRepository.save(roomUser);
-        });
-
-        return modelMapperUtil.convertToChatRoomResponse(chatRoom);
+    public String findOrCreateChatRoom(String userUuid, String targetUuid) {
+        String roomUuid = findChatRoomUuID(RoomUserFindDto.getInstance(userUuid,targetUuid));
+        return (roomUuid.equals("0")) ? createChatRoom(userUuid,targetUuid) : roomUuid;
     }
 
     @Override
@@ -61,17 +53,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public void updateRoomUserState(RoomUserState roomUserState, ChatDto chatDto){
         roomUserRepository.updateRoomUserState(roomUserState, chatDto);
-    }
-
-    @Override
-    public void updateReadMessageCount(ChatDto chatDto) {
-        roomUserRepository.updateReadMessageCount(chatDto);
-    }
-
-    @Override
-    public ChatRoomResponse findOrCreateChatRoom(ChatRoomCreateRequest chatRoomCreateRequest) {
-        String roomUuid = findChatRoomUuID(RoomUserFindDto.convert(chatRoomCreateRequest));
-        return (roomUuid.equals("0")) ? createChatRoom(chatRoomCreateRequest) : ChatRoomResponse.getInstance(roomUuid);
     }
 
     @Override
@@ -90,8 +71,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public ChatDto doExitUserProcess(StompHeaderAccessor stompHeaderAccessor) {
         String roomUUID = (String) stompHeaderAccessor.getSessionAttributes().get("roomUUID");
         String userUUID = (String) stompHeaderAccessor.getSessionAttributes().get("userUUID");
-        String username = roomUserRepository.findUsernameByRoomIdAndUserId(roomUUID,userUUID);
-        ChatDto chatDtoExit = ChatDto.getInstanceExit(roomUUID, userUUID, username);
+        ChatDto chatDtoExit = ChatDto.getInstanceExit(roomUUID, userUUID);
         roomUserRepository.updateRoomUserState(RoomUserState.EXITED, chatDtoExit); // User 상태 변경하기
 
         return chatDtoExit;
@@ -109,6 +89,21 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private String findChatRoomUuID(RoomUserFindDto roomUserFindDto) {
         return chatRoomRepository.findChatRoomByUserId(roomUserFindDto).getRoomUuid();
     }
+
+    private String createChatRoom(String userUuid, String targetUuid) {
+        ChatRoom chatRoom = ChatRoom.getInstance();
+        RoomUser user = modelMapperUtil.convertToRoomUser(userUuid);
+        RoomUser target = modelMapperUtil.convertToRoomUser(targetUuid);
+
+        user.updateChatRoom(chatRoom);
+        target.updateChatRoom(chatRoom);
+        chatRoomRepository.save(chatRoom);
+        roomUserRepository.save(user);
+        roomUserRepository.save(target);
+
+        return chatRoom.getRoomUuid();
+    }
+
 
 
 }

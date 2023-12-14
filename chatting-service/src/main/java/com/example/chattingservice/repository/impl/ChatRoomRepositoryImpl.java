@@ -66,7 +66,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
                 .from(roomUser)
                 .leftJoin(roomUser.chatRoom, chatRoom)
                 .where(
-                        roomUser.userUuid.eq(roomUserFindDto.getFromUuid()),
+                        roomUser.userUuid.eq(roomUserFindDto.getUserUuid()),
                         roomUser.chatRoom.roomUuid.in(
                                 JPAExpressions
                                         .select(roomUser.chatRoom.roomUuid)

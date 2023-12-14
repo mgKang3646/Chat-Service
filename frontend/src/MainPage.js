@@ -34,29 +34,24 @@ function MainPage(){
 
     const createChatRoom = async(event, user) =>{
         event.preventDefault();
-
-        const createChatRoomForm = new FormData();
-        createChatRoomForm.append("targetUuid", user.userId); // Get 파라미터
-        createChatRoomForm.append("fromUuid",localStorage.getItem('userId')); // 헤더
-        createChatRoomForm.append("targetNickname", user.username); // 서비스간 통신
-        createChatRoomForm.append("fromNickname", localStorage.getItem('username')); // 서비스 간 통신
+        const url = "chatting-service/api/chat/createroom?targetUuid=" + user.userId;
 
         try{
-            const response = await axios({
-                method: "post",
-                url: "chatting-service/api/chat/createroom",
-                data: createChatRoomForm,
-                headers: { "Content-Type" : "application/json" }
+
+            const response = await axios.get(url,{
+                headers: {
+                    userUuid: localStorage.getItem('userId')
+                }
             });
 
-            if(response.status === 200){
+            if(response.status === 201){
                 console.log(response.data.roomUuid);
                 const roomId = response.data.roomUuid;
                 navigate('/chatpage', 
                 { 
                     state: { 
                         roomId : roomId, 
-                        ownerName : user.username
+                        ownerName : "상대"
                     }
                 });
             }

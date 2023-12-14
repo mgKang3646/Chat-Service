@@ -9,13 +9,13 @@ import lombok.Getter;
 @Getter
 public class RoomUserFindDto {
 
-    private String fromUuid;
+    private String userUuid;
     private String targetUuid;
 
-    public static RoomUserFindDto convert(ChatRoomCreateRequest roomCreateRequest){
+    public static RoomUserFindDto getInstance(String userUuid, String targetUuid){
         return RoomUserFindDto.builder()
-                .fromUuid(roomCreateRequest.getFromUuid())
-                .targetUuid(roomCreateRequest.getTargetUuid())
+                .userUuid(userUuid)
+                .targetUuid(targetUuid)
                 .build();
     }
 }

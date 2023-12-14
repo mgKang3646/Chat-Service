@@ -28,19 +28,12 @@ public class ChatDto implements Serializable {
     private String senderUuid; //필수값
     @NotNull(message = "{required.request}")
     private LocalDateTime messageTime; //필수값 + 바인딩 에러
-    private String senderNickname; // 서비스 간 통신
     private String message;
 
-    public void updateEnterMessage(){
-        setMessage(getSenderNickname().concat("님이 입장하였습니다."));
-    }
-
-    public static ChatDto getInstanceExit(String roomUUID, String userUUID, String username){
+    public static ChatDto getInstanceExit(String roomUUID, String userUUID ){
         return ChatDto.builder()
                 .roomUuid(roomUUID)
                 .senderUuid(userUUID)
-                .senderNickname(username)
-                .message(username.concat("님이 퇴장하였습니다."))
                 .type(MessageType.EXITED)
                 .build();
     }

@@ -16,7 +16,6 @@ public class ChatRoomResponse {
 
     private String roomUuid;
     private String targetUuid;
-    private String targetNickname;
     private String recentMessage;
     private LocalDateTime recentDate;
     private int messageNotRead;
@@ -32,7 +31,6 @@ public class ChatRoomResponse {
         for (RoomUserCreateDto roomUser : chatRoomDto.getRoomUsers()) {
             if(!roomUser.getUserUuid().equals(sender)) {
                 chatRoomResponse.setRoomUuid(chatRoomDto.getRoomUuid()); // RoomId
-                chatRoomResponse.setTargetNickname(roomUser.getUserNickname()); // 대화상대 닉네임
                 chatRoomResponse.setTargetUuid(roomUser.getUserUuid()); // 대화상대 userId
                 chatRoomResponse.setRecentMessage(chatRoomDto.getRecentMessage()); // 가장 최근 대화 메시지
                 chatRoomResponse.setRecentDate(chatRoomDto.getRecentDate()); // 가장 최근 대화 시간
