@@ -20,4 +20,12 @@ public class MessageUtil {
         return messageSource.getMessage("request.nosuch.user", new String[]{chatDto.getRoomUuid(),
                 chatDto.getSenderUuid()},Locale.KOREA);
     }
+
+    public String getNoEqualUserUuidMessage(String userUuid,String targetUuid){
+        return messageSource.getMessage("request.noequal.user", new String[]{userUuid,targetUuid},Locale.KOREA);
+    }
+
+    public String getNoIsoTypeMessage(){
+        return messageSource.getMessage("request.noisotype.datae",new String[] {},Locale.KOREA);
+    }
 }

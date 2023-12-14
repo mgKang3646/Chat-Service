@@ -1,6 +1,7 @@
 package com.example.chattingservice.controller;
 import com.example.chattingservice.config.properties.vo.KafkaConfigVo;
 import com.example.chattingservice.dto.ChatDto;
+import com.example.chattingservice.util.MessageUtil;
 import com.example.chattingservice.vo.ChatRoomCreateResponse;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.service.ChatRoomService;
@@ -29,6 +30,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final KafkaTemplate<String, ChatDto> kafkaTemplate;
     private final KafkaConfigVo kafkaConfigVo;
+    private final MessageUtil messageUtil;
 
     @PostMapping("/send")
     public void publishMessageToTopic(@RequestBody @Valid ChatDto chatDto)
@@ -47,6 +49,9 @@ public class ChatRoomController {
     @GetMapping("/api/chat/createroom")
     public ResponseEntity<ChatRoomCreateResponse> createRoom(@RequestHeader("userUuid") @NotBlank String userUuid,
                                                              @RequestParam @NotBlank String targetUuid) {
+        if(userUuid.equals(targetUuid)) {
+            throw new IllegalArgumentException(messageUtil.getNoEqualUserUuidMessage(userUuid,targetUuid));
+        }
         String roomUuid = chatRoomService.findOrCreateChatRoom(userUuid, targetUuid);
         return new ResponseEntity<>(ChatRoomCreateResponse.getInstance(roomUuid), HttpStatus.CREATED);
     }

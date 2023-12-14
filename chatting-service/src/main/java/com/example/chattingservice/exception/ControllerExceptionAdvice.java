@@ -1,7 +1,9 @@
 package com.example.chattingservice.exception;
 
 
+import com.example.chattingservice.util.MessageUtil;
 import com.example.chattingservice.vo.ErrorResult;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,11 @@ import java.util.List;
 
 @Slf4j
 @RestControllerAdvice(basePackages = "com.example.chattingservice.controller")
+@RequiredArgsConstructor
 public class ControllerExceptionAdvice {
+
+    private final MessageUtil messageUtil;
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResult> methodArgumentExHandler(MethodArgumentNotValidException ex,
                                                                HttpServletRequest request){
@@ -38,8 +44,8 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<ErrorResult> DateTimeParseExceptionHandler(DateTimeParseException ex,
                                                                      HttpServletRequest request){
-        String errorMessage = "ISO 포맷의 날짜 데이터를 문자열 형식으로 넘겨주어야 합니다.";
-        return new ResponseEntity<>(ErrorResult.getInstance(errorMessage,request.getRequestURL().toString())
+        return new ResponseEntity<>(
+                ErrorResult.getInstance(messageUtil.getNoIsoTypeMessage(),request.getRequestURL().toString())
                 ,HttpStatus.BAD_REQUEST);
     }
 
@@ -56,6 +62,12 @@ public class ControllerExceptionAdvice {
 
         return new ResponseEntity<>(ErrorResult.getInstance(ex.getMessage(),request.getRequestURL().toString()),
                 HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResult> IllegalArgumentExceptionHandler(IllegalArgumentException exception,
+                                                                       HttpServletRequest request){
+        return new ResponseEntity<>(ErrorResult.getInstance(exception.getMessage(),request.getRequestURL().toString())
+                ,HttpStatus.BAD_REQUEST);
     }
 
     private List<String> getMethodArgumentNotValidMessage(MethodArgumentNotValidException ex){
