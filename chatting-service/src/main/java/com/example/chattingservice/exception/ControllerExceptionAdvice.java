@@ -20,7 +20,7 @@ import java.util.List;
 
 @Slf4j
 @RestControllerAdvice(basePackages = "com.example.chattingservice.controller")
-public class ExceptionControllerAdvice {
+public class ControllerExceptionAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResult> methodArgumentExHandler(MethodArgumentNotValidException ex,
                                                                HttpServletRequest request){

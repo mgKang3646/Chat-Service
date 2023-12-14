@@ -23,7 +23,7 @@ public class RoomUserRepositoryImpl implements RoomUserRepositoryCustom {
     }
 
     @Override
-    @Transactional // 프록시로 생성된 Respository 객체는 @Transactional(ReadOnly=true)이므로 메소드 단에서 새로 정의해주어야 한다.
+    @Transactional
     public long updateRoomUserState(RoomUserState userState, ChatDto chatDto) {
         return queryFactory
                 .update(roomUser)

@@ -1,7 +1,6 @@
 package com.example.chattingservice.repository.impl;
 
 import com.example.chattingservice.dto.ChatDto;
-import com.example.chattingservice.dto.RoomUserCreateDto;
 import com.example.chattingservice.dto.RoomUserFindDto;
 import com.example.chattingservice.repository.ChatRoomRepositoryCustom;
 import com.example.chattingservice.vo.RoomUserState;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import static com.example.chattingservice.entity.QChatRoom.chatRoom;
 import static com.example.chattingservice.entity.QRoomUser.roomUser;
 

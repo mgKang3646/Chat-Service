@@ -20,13 +20,13 @@ public class ChatDto implements Serializable {
         ENTER, TALK, LEAVE, EXITED;
 
     }
-    @NotNull(message = "{required.request}")
+    @NotNull(message = "{request.required}")
     private MessageType type; // 필수값
-    @NotBlank(message = "{required.request}")
+    @NotBlank(message = "{request.required}")
     private String roomUuid; // 필수값
-    @NotBlank(message = "{required.request}")
+    @NotBlank(message = "{request.required}")
     private String senderUuid; //필수값
-    @NotNull(message = "{required.request}")
+    @NotNull(message = "{request.required}")
     private LocalDateTime messageTime; //필수값 + 바인딩 에러
     private String message;
 

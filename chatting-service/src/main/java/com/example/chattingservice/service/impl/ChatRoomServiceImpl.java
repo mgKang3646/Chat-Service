@@ -11,6 +11,7 @@ import com.example.chattingservice.repository.ChatMessageRepository;
 import com.example.chattingservice.repository.ChatRoomRepository;
 import com.example.chattingservice.repository.RoomUserRepository;
 import com.example.chattingservice.service.ChatRoomService;
+import com.example.chattingservice.util.MessageUtil;
 import com.example.chattingservice.util.ModelMapperUtil;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.vo.RoomUserState;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -34,27 +36,30 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final RoomUserRepository roomUserRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final PageConfigVo pageConfigVo;
+    private final MessageUtil messageUtil;
 
 
     @Override
     public String findOrCreateChatRoom(String userUuid, String targetUuid) {
         ChatRoom chatRoom = chatRoomRepository.findChatRoomByUserId(RoomUserFindDto.getInstance(userUuid, targetUuid));
-//        chatRoom = Optional.ofNullable(chatRoom).orElse(createChatRoom(userUuid, targetUuid));
         chatRoom = Optional.ofNullable(chatRoom).orElseGet(()->createChatRoom(userUuid, targetUuid));
         return chatRoom.getRoomUuid();
     }
 
     @Override
     public void processSendMessage(ChatDto chatDto) {
-        chatRoomRepository.updateRecentMessageData(chatDto); // ChatRoom 데이터 update ( ChatMessage 엔티티 생성으로 인해 쿼리 조회로 가능해질 듯 => 리팩토링 필요 )
-        ChatRoom chatRoom = chatRoomRepository.findChatRoomByRoomUuid(chatDto.getRoomUuid());  // 1. roomUuid chatRoom 조회
-        ChatMessage chatMessage = modelMapperUtil.convertToChatMessage(chatDto,chatRoom);// 2. ChatDto -> ChatMessage로 변환 후 chatRoom 세팅
-        chatMessageRepository.save(chatMessage);// 3. save
+        ChatRoom chatRoom = Optional.of(chatRoomRepository.findChatRoomByRoomUuid(chatDto.getRoomUuid()))
+                .orElseThrow(() -> new NoSuchElementException(messageUtil.getRoomNoSuchMessage(chatDto.getRoomUuid())));
+
+        chatRoomRepository.updateRecentMessageData(chatDto);
+        chatMessageRepository.save(modelMapperUtil.convertToChatMessage(chatDto,chatRoom));
     }
 
     @Override
     public void updateRoomUserState(RoomUserState roomUserState, ChatDto chatDto){
-        roomUserRepository.updateRoomUserState(roomUserState, chatDto);
+
+        long count = roomUserRepository.updateRoomUserState(roomUserState, chatDto);
+        if ( count <= 0 ) throw new NoSuchElementException(messageUtil.getUserNoSuchMessage(chatDto));
     }
 
     @Override
@@ -65,7 +70,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public void updateEnterUserState(RoomUserState roomUserState, ChatDto chatDto) {
-        roomUserRepository.updateRoomUserState(roomUserState, chatDto);
+        long count = roomUserRepository.updateRoomUserState(roomUserState, chatDto);
+        if ( count <= 0 ) throw new NoSuchElementException(messageUtil.getUserNoSuchMessage(chatDto));
         roomUserRepository.updateReadMessageCount(chatDto);
     }
 
@@ -74,23 +80,20 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         String roomUUID = (String) stompHeaderAccessor.getSessionAttributes().get("roomUUID");
         String userUUID = (String) stompHeaderAccessor.getSessionAttributes().get("userUUID");
         ChatDto chatDtoExit = ChatDto.getInstanceExit(roomUUID, userUUID);
-        roomUserRepository.updateRoomUserState(RoomUserState.EXITED, chatDtoExit); // User 상태 변경하기
+        long count = roomUserRepository.updateRoomUserState(RoomUserState.EXITED, chatDtoExit);// User 상태 변경하기
+        if ( count <= 0 ) throw new NoSuchElementException(messageUtil.getUserNoSuchMessage(chatDtoExit));
 
         return chatDtoExit;
     }
 
     @Override
     public Slice<ChatDto> findAllChatList(String roomUuid, LocalDateTime beforeTime) {
-        PageRequest pageRequest = PageRequest.of(pageConfigVo.getOffset(),pageConfigVo.getSize(),
-                Sort.Direction.DESC,pageConfigVo.getOrderBy());
+        PageRequest pageRequest = PageRequest.of(pageConfigVo.getOffset(),pageConfigVo.getSize());
         Slice<ChatMessage> chatSliceMessages =
                 chatMessageRepository.findChatMessageListByRoomUuid(roomUuid, pageRequest, beforeTime);
         return chatSliceMessages.map(chatMessage -> chatMessage.convert());
     }
 
-    private String findChatRoomUuID(RoomUserFindDto roomUserFindDto) {
-        return chatRoomRepository.findChatRoomByUserId(roomUserFindDto).getRoomUuid();
-    }
 
     private ChatRoom createChatRoom(String userUuid, String targetUuid) {
         ChatRoom chatRoom = ChatRoom.getInstance();
