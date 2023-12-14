@@ -12,7 +12,6 @@ import com.example.chattingservice.repository.ChatRoomRepository;
 import com.example.chattingservice.repository.RoomUserRepository;
 import com.example.chattingservice.service.ChatRoomService;
 import com.example.chattingservice.util.ModelMapperUtil;
-import com.example.chattingservice.vo.ChatRoomCreateRequest;
 import com.example.chattingservice.vo.ChatRoomResponse;
 import com.example.chattingservice.vo.RoomUserState;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,8 +38,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public String findOrCreateChatRoom(String userUuid, String targetUuid) {
-        String roomUuid = findChatRoomUuID(RoomUserFindDto.getInstance(userUuid,targetUuid));
-        return (roomUuid.equals("0")) ? createChatRoom(userUuid,targetUuid) : roomUuid;
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomByUserId(RoomUserFindDto.getInstance(userUuid, targetUuid));
+//        chatRoom = Optional.ofNullable(chatRoom).orElse(createChatRoom(userUuid, targetUuid));
+        chatRoom = Optional.ofNullable(chatRoom).orElseGet(()->createChatRoom(userUuid, targetUuid));
+        return chatRoom.getRoomUuid();
     }
 
     @Override
@@ -90,7 +92,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomRepository.findChatRoomByUserId(roomUserFindDto).getRoomUuid();
     }
 
-    private String createChatRoom(String userUuid, String targetUuid) {
+    private ChatRoom createChatRoom(String userUuid, String targetUuid) {
         ChatRoom chatRoom = ChatRoom.getInstance();
         RoomUser user = modelMapperUtil.convertToRoomUser(userUuid);
         RoomUser target = modelMapperUtil.convertToRoomUser(targetUuid);
@@ -101,7 +103,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         roomUserRepository.save(user);
         roomUserRepository.save(target);
 
-        return chatRoom.getRoomUuid();
+        return chatRoom;
     }
 
 

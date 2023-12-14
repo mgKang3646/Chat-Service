@@ -61,7 +61,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
     @Override
     public ChatRoom findChatRoomByUserId(RoomUserFindDto roomUserFindDto) {
 
-        ChatRoom findChatRoom = queryFactory
+        ChatRoom chatRoom1=  queryFactory
                 .select(roomUser.chatRoom)
                 .from(roomUser)
                 .leftJoin(roomUser.chatRoom, chatRoom)
@@ -78,7 +78,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
                         )
                 ).fetchOne();
 
-        return Optional.ofNullable(findChatRoom).orElse(ChatRoom.getInstance("0"));
+        return chatRoom1;
 
     }
 

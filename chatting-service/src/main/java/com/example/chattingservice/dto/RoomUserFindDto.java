@@ -1,7 +1,6 @@
 package com.example.chattingservice.dto;
 
 
-import com.example.chattingservice.vo.ChatRoomCreateRequest;
 import lombok.Builder;
 import lombok.Getter;
 
